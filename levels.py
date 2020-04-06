@@ -1,9 +1,12 @@
 from typing import Optional
 from objects import Player, Box
+from BaseApp import GUI, Application
 
 
-class Level:
-    def __init__(self, file_name: str):
+class Level(GUI):
+    def __init__(self, app: Application, file_name: str):
+        super().__init__(app, name=file_name)
+
         self.dimensions = None
         self.player = None
         self.field = []

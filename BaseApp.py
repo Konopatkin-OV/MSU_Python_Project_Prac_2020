@@ -1,5 +1,6 @@
 import pygame
 import pygame.locals
+from levels import Level
 
 
 # the main application class which initialises pygame and rules over interfaces...
@@ -112,5 +113,6 @@ class GUI(object):
 if __name__ == '__main__':
     app = Application()
     gui = GUI(app, '__main__')
+    # lvl0 = Level(app, '0')
     app.start()
 
