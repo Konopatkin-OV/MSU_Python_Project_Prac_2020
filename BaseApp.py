@@ -57,11 +57,11 @@ class GUI(object):
 
     # events handler
     def process_event(self, event):
-        pass
+        return
 
     # time handler, delta_t - time from the last call
     def process_frame(self, delta_t):
-        pass
+        return
 
     # main application cycle for current GUI
     def run(self):
@@ -75,7 +75,15 @@ class GUI(object):
                     running = False
                     return_value = -1
                 else:
-                    self.process_event(event)
+                    res = self.process_event(event)
+                    # cannot close the whole application from anything other than QUIT
+                    # but can go to another interface
+                    if res == -1:
+                        running = False
+                        return_value = None
+                    elif res is not None:
+                        running = False
+                        return_value = res
 
             # get time passed since last frame, 
             # plus wait until the whole frame time passed
@@ -85,7 +93,14 @@ class GUI(object):
             # getting through all the computations required...
             delta_t = 1 / self.application.max_fps
 
-            self.process_frame(delta_t)
+            res = self.process_frame(delta_t)
+            # maybe interface can close itself after some time?
+            if res == -1:
+                running = False
+                return_value = None
+            elif res is not None:
+                running = False
+                return_value = res
 
             self.render()
 
