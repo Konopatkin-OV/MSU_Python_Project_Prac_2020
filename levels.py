@@ -1,10 +1,10 @@
 from typing import Optional
 from objects import Player, Box
-from BaseApp import GUI, Application
+from gui import GUI
 
 
 class Level(GUI):
-    def __init__(self, app: Application, file_name: str):
+    def __init__(self, app, file_name: str):
         super().__init__(app, name=file_name)
 
         self.dimensions = None
@@ -13,7 +13,7 @@ class Level(GUI):
         self.boxes = []
         self.places_for_boxes = []
 
-        f = open(f'levels/{file_name}.lvl', 'r')
+        f = open(f'lvls/{file_name}.lvl', 'r')
         for x, string in enumerate(f):
             line = []
             for y, symbol in enumerate(string):
