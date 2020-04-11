@@ -1,7 +1,7 @@
 import pygame
 import pygame.locals
 from gui import GUI
-from levels import MoveBoxesGame
+from moveBoxesGame import MoveBoxesGame
 
 
 # the main application class which initialises pygame and rules over interfaces...
