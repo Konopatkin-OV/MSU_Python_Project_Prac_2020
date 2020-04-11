@@ -64,5 +64,10 @@ class Level:
     def is_empty(self, x: int, y: int) -> bool:
         return self.field[x][y] and not self.get_box(x, y)
 
+    def reset(self):
+        self.player.reset()
+        for box in self.boxes:
+            box.reset()
+
 
 
