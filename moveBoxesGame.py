@@ -31,9 +31,12 @@ class MoveBoxesGame(GUI):
         self.images['box_cell'] = pygame.surface.Surface((64, 64))
         self.images['box_cell'].fill((100, 100, 200))
         self.images['player'] = pygame.surface.Surface((64, 64))
-        self.images['player'].fill((50, 200, 50))
+        self.images['player'].fill((50, 150, 50))
         self.images['box'] = pygame.surface.Surface((64, 64))
         self.images['box'].fill((100, 50, 0))
+        self.images['grab'] = pygame.surface.Surface((64, 64), flags=pygame.locals.SRCALPHA)
+        self.images['grab'].fill((0, 0, 0, 0))
+        pygame.draw.circle(self.images['grab'], (50, 100, 200), (32, 32), 25, 4)
 
         # game variables
         self.moves_made = 0
@@ -101,6 +104,14 @@ class MoveBoxesGame(GUI):
         x, y = self.current_level.player.x, self.current_level.player.y
         cur_img = pygame.transform.scale(self.images['player'], (cell_size - delta_s, cell_size - delta_s))
         screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
+
+        if self.grabbed_box is not None or self.attempting_grabbing:
+            if self.grabbed_box is not None:
+                x, y = self.grabbed_box.x, self.grabbed_box.y
+            else:
+                x, y = self.current_level.player.x, self.current_level.player.y
+            cur_img = pygame.transform.scale(self.images['grab'], (cell_size - delta_s, cell_size - delta_s))
+            screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # render menu elements (TODO)
 
