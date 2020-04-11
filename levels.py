@@ -30,7 +30,7 @@ class Level:
             self.field.append(line)
         # Transpose the matrix
         self.field = list(map(list, zip(*self.field)))
-        self.dimensions = len(self.field[0]), len(self.field)
+        self.dimensions = len(self.field), len(self.field[0])
 
     """Indicates that the level is finished."""
     def is_finished(self) -> bool:
@@ -46,6 +46,9 @@ class Level:
 
     """Indicates that the cell is available and has no boxes on it."""
     def is_empty(self, x: int, y: int) -> bool:
+        if x < 0 or x >= self.dimensions[0] or\
+           y < 0 or y >= self.dimensions[1]:
+            return False
         return self.field[x][y] and not self.get_box(x, y)
 
     def reset(self):

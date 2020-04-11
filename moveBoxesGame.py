@@ -44,10 +44,10 @@ class MoveBoxesGame(GUI):
                      "grab": pygame.locals.K_e,
                      "next_lvl": pygame.locals.K_PAGEUP,
                      "prev_lvl": pygame.locals.K_PAGEDOWN,
-                     "move": (pygame.locals.K_UP,
-                              pygame.locals.K_DOWN,
-                              pygame.locals.K_LEFT,
-                              pygame.locals.K_RIGHT)
+                     "move": {pygame.locals.K_UP: 0,
+                              pygame.locals.K_DOWN: 1,
+                              pygame.locals.K_LEFT: 2,
+                              pygame.locals.K_RIGHT: 3}
                     }
 
         self.move_dirs = ((0, -1), (0, 1), (-1, 0), (1, 0))
@@ -70,7 +70,7 @@ class MoveBoxesGame(GUI):
 
         # rendering the game field
         # compute cell size and offset to render the field fully in the center of screen
-        c_h, c_w = self.current_level.dimensions # why do transpose in level???
+        c_w, c_h = self.current_level.dimensions
         cell_size = int(min(s_w / c_w, s_h / c_h))
         off_x, off_y = (gf_off_x + (s_w - cell_size * c_w) / 2, gf_off_y + (s_h - cell_size * c_h) / 2)
 
@@ -110,9 +110,24 @@ class MoveBoxesGame(GUI):
         if event.type == pygame.locals.KEYDOWN:
             if event.key == pygame.locals.K_ESCAPE:
                 return -1
-            elif event.key == pygame.locals.K_r:
+            elif event.key == self.keys["reset"]:
                 self.reset()
+            elif event.key == self.keys["grab"]:
+                if self.grabbed_box is not None:
+                    self.grabbed_box = None
+                else:
+                    self.attempting_grabbing = not self.attempting_grabbing
+            elif event.key in self.keys["move"]:
+                # try moving, still no collision checking
+                # get direction of moving
+                cur_dir = self.move_dirs[self.keys["move"][event.key]]
+                dx, dy = cur_dir
+                x, y = self.current_level.player.x, self.current_level.player.y
+                c_w, c_h = self.current_level.dimensions
+                g_x, g_y = x + dx, y + dy # goal cell
 
+                if self.current_level.is_empty(g_x, g_y):
+                    self.current_level.player.move(g_x, g_y)
 
     def reset(self):
         self.current_level.reset()
