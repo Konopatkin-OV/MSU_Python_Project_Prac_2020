@@ -1,12 +1,26 @@
 from typing import Optional
 from objects import Player, Box
 from gui import GUI
+import os
 
 
-class Level(GUI):
-    def __init__(self, app, file_name: str):
-        super().__init__(app, name=file_name)
+class MoveBoxesGame(GUI):
+    def __init__(self, app, name):
+        super().__init__(app, name)
 
+        self.levels = {}
+
+        root, dirs, files = next(os.walk('lvls/', topdown=True))
+        for name in files:
+            if name.endswith('.lvl'):
+                name = name[:-4]
+                self.levels[name] = Level(name)
+
+        self.current_level = self.levels['0']
+
+
+class Level:
+    def __init__(self, file_name=None):
         self.dimensions = None
         self.player = None
         self.field = []
