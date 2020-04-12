@@ -55,6 +55,9 @@ class MoveBoxesGame(GUI):
 
         self.move_dirs = ((0, -1), (0, 1), (-1, 0), (1, 0))
 
+        # False if player can only push boxes
+        self.allow_all_box_moves = True 
+
     def set_image(self, name, image):
         self.images[name] = image
 
@@ -105,6 +108,7 @@ class MoveBoxesGame(GUI):
         cur_img = pygame.transform.scale(self.images['player'], (cell_size - delta_s, cell_size - delta_s))
         screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
+        # magic grabbing circle on player trying to grab or on the grabbed box
         if self.grabbed_box is not None or self.attempting_grabbing:
             if self.grabbed_box is not None:
                 x, y = self.grabbed_box.x, self.grabbed_box.y
@@ -137,8 +141,35 @@ class MoveBoxesGame(GUI):
                 c_w, c_h = self.current_level.dimensions
                 g_x, g_y = x + dx, y + dy # goal cell
 
-                if self.current_level.is_empty(g_x, g_y):
-                    self.current_level.player.move(g_x, g_y)
+                if self.attempting_grabbing:
+                    box = self.current_level.get_box(g_x, g_y)
+                    if box is not None:
+                        self.grabbed_box = box
+                        self.attempting_grabbing = False
+                elif self.grabbed_box is not None:
+                    b_x, b_y = self.grabbed_box.x, self.grabbed_box.y
+                    # dir to grabbed box and goal cell of grabbed box
+                    bd_x, bd_y = b_x - x, b_y - y
+                    bg_x, bg_y = b_x + dx, b_y + dy
+
+                    good_move = False
+                    if g_x == b_x and g_y == b_y:
+                        if self.current_level.is_empty(bg_x, bg_y):
+                            good_move = True
+                    elif self.allow_all_box_moves:
+                        if bg_x == x and bg_y == y:
+                            if self.current_level.is_empty(g_x, g_y):
+                                good_move = True
+                        else:
+                            if self.current_level.is_empty(g_x, g_y) and\
+                               self.current_level.is_empty(bg_x, bg_y):
+                                good_move = True
+                    if good_move:
+                        self.current_level.player.move(g_x, g_y)
+                        self.grabbed_box.move(bg_x, bg_y)
+                else:
+                    if self.current_level.is_empty(g_x, g_y):
+                        self.current_level.player.move(g_x, g_y)
 
     def reset(self):
         self.current_level.reset()
