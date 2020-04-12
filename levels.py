@@ -1,12 +1,10 @@
 from typing import Optional
 from objects import Player, Box
-from gui import GUI
+import os
 
 
-class Level(GUI):
-    def __init__(self, app, file_name: str):
-        super().__init__(app, name=file_name)
-
+class Level:
+    def __init__(self, file_name=None):
         self.dimensions = None
         self.player = None
         self.field = []
@@ -32,7 +30,7 @@ class Level(GUI):
             self.field.append(line)
         # Transpose the matrix
         self.field = list(map(list, zip(*self.field)))
-        self.dimensions = len(self.field[0]), len(self.field)
+        self.dimensions = len(self.field), len(self.field[0])
 
     """Indicates that the level is finished."""
     def is_finished(self) -> bool:
@@ -48,7 +46,15 @@ class Level(GUI):
 
     """Indicates that the cell is available and has no boxes on it."""
     def is_empty(self, x: int, y: int) -> bool:
+        if x < 0 or x >= self.dimensions[0] or\
+           y < 0 or y >= self.dimensions[1]:
+            return False
         return self.field[x][y] and not self.get_box(x, y)
+
+    def reset(self):
+        self.player.reset()
+        for box in self.boxes:
+            box.reset()
 
 
 
