@@ -25,5 +25,6 @@ class Button():
         screen.blit(text, place)      
         
     """Post event to events queue."""
-    def press(self):
+    def press(self): 
         pygame.event.post(self.event) 
+        
