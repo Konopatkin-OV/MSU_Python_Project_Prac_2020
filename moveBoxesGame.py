@@ -21,7 +21,7 @@ class MoveBoxesGame(GUI):
                 except IOError:
                     print(f'Level {name} is not valid.')
 
-        self.current_level = self.levels['0']
+        self.current_level = self.levels['1']
 
         # images for game objects
         # default monochrome colors
@@ -179,14 +179,14 @@ class MoveBoxesGame(GUI):
                 else:
                     if self.current_level.is_empty(g_x, g_y):
                         self.current_level.player.move(g_x, g_y)
+        
         # press a button
         elif event.type == pygame.locals.MOUSEBUTTONDOWN and self.button.rect.collidepoint(event.pos):
             self.button.press()
         elif event.type == pygame.locals.USEREVENT:
             menu.Menu(event.app, event.name)
             return event.name
-
-
+    
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
