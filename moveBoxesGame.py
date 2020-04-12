@@ -167,15 +167,20 @@ class MoveBoxesGame(GUI):
                     if good_move:
                         self.current_level.player.move(g_x, g_y)
                         self.grabbed_box.move(bg_x, bg_y)
+                        self.moves_made += 1
                 else:
                     if self.current_level.is_empty(g_x, g_y):
                         self.current_level.player.move(g_x, g_y)
+                        self.moves_made += 1
 
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
         self.attempting_grabbing = False
         self.grabbed_box = None
+
+    def select_level(self, name):
+        self.current_level = self.levels[name]
 
 
 if __name__ == '__main__':
