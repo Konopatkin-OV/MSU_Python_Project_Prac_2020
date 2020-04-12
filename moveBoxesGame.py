@@ -3,7 +3,8 @@ from levels import Level
 import os
 import pygame
 import pygame.locals
-
+import menu
+import button
 
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
@@ -121,6 +122,11 @@ class MoveBoxesGame(GUI):
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # render menu elements (TODO)
+        # button to menu
+        button_event = pygame.event.Event(pygame.USEREVENT, 
+                              {'app': self.application, 'name': '__main__'})
+        self.button = button.Button('MENU', screen, button_event, (0,0))        
+
 
         pygame.display.update()
 
@@ -173,7 +179,14 @@ class MoveBoxesGame(GUI):
                 else:
                     if self.current_level.is_empty(g_x, g_y):
                         self.current_level.player.move(g_x, g_y)
-
+        
+        # press a button
+        elif event.type == pygame.locals.MOUSEBUTTONDOWN and self.button.rect.collidepoint(event.pos):
+            self.button.press()
+        elif event.type == pygame.locals.USEREVENT:
+            menu.Menu(event.app, event.name)
+            return event.name
+    
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
