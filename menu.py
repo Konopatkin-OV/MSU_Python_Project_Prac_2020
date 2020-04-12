@@ -1,6 +1,7 @@
+import pygame
 from gui import GUI
 import button
-import pygame
+import choose_level
 import moveBoxesGame
 
 class Menu(GUI):
@@ -19,10 +20,18 @@ class Menu(GUI):
         e = pygame.event.Event(pygame.QUIT)
         self.B.append(button.Button('EXIT', screen, e, (w, h)))
      
-        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame'})
+        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
+                               'name': 'ChooseLevel'})
+        h -= 2*button.BUTTON_SIZE[1] 
+        self.B.append(button.Button('LEVELS', screen, e, (w, h))) 
+
+        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
+                               'name': 'moveBoxesGame'})
         h -= 2*button.BUTTON_SIZE[1] 
         self.B.append(button.Button('START', screen, e, (w, h))) 
         pygame.display.update()
+
+              
 
     """Button event handler."""
     def process_event(self, e):
@@ -32,7 +41,11 @@ class Menu(GUI):
                 b.press()
                 return
         if e.type == pygame.USEREVENT:
+            if e.name == 'moveBoxesGame':
                 moveBoxesGame.MoveBoxesGame(e.app, e.name)
+                return e.name
+            else:
+                choose_level.ChooseLevel(e.app, e.name)
                 return e.name
 
 
