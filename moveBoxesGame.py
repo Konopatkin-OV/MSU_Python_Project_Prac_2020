@@ -3,7 +3,8 @@ from levels import Level
 import os
 import pygame
 import pygame.locals
-
+import menu
+import button
 
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
@@ -15,9 +16,12 @@ class MoveBoxesGame(GUI):
         for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
-                self.levels[name] = Level(name)
+                try:
+                    self.levels[name] = Level(name)
+                except IOError:
+                    print(f'Level {name} is not valid.')
 
-        self.current_level = self.levels['0']
+        self.current_level = self.levels['1']
 
         # images for game objects
         # default monochrome colors
@@ -56,7 +60,7 @@ class MoveBoxesGame(GUI):
         self.move_dirs = ((0, -1), (0, 1), (-1, 0), (1, 0))
 
         # False if player can only push boxes
-        self.allow_all_box_moves = True 
+        self.allow_all_box_moves = True
 
     def set_image(self, name, image):
         self.images[name] = image
@@ -118,6 +122,11 @@ class MoveBoxesGame(GUI):
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # render menu elements (TODO)
+        # button to menu
+        button_event = pygame.event.Event(pygame.USEREVENT, 
+                              {'app': self.application, 'name': '__main__'})
+        self.button = button.Button('MENU', screen, button_event, (0,0))        
+
 
         pygame.display.update()
 
@@ -173,6 +182,14 @@ class MoveBoxesGame(GUI):
                         self.current_level.player.move(g_x, g_y)
                         self.moves_made += 1
 
+        # press a button
+        elif event.type == pygame.locals.MOUSEBUTTONDOWN and self.button.rect.collidepoint(event.pos):
+            self.button.press()
+        elif event.type == pygame.locals.USEREVENT:
+            menu.Menu(event.app, event.name)
+            return event.name
+    
+    
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0

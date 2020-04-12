@@ -2,6 +2,7 @@ import pygame
 import pygame.locals
 from gui import GUI
 from moveBoxesGame import MoveBoxesGame
+from menu import Menu
 
 
 # the main application class which initialises pygame and rules over interfaces...
@@ -48,7 +49,6 @@ class Application(object):
 
 if __name__ == '__main__':
     app = Application()
-    gui = GUI(app, '__main__')
-    moveBoxesGame = MoveBoxesGame(app, 'moveBoxesGame')
+    menu = Menu(app, '__main__') 
     app.start()
 
