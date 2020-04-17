@@ -10,11 +10,7 @@ class Menu(GUI):
 
         #button list for menu
         self.B = []
-    
-    """Button rendering."""
-    def render(self):
         screen = self.application.screen
-        screen.fill((0,0,0))
         w = screen.get_width()/2-button.BUTTON_SIZE[0]/2
         h =  screen.get_height()/2-button.BUTTON_SIZE[1]/2
         e = pygame.event.Event(pygame.QUIT)
@@ -25,10 +21,17 @@ class Menu(GUI):
         h -= 2*button.BUTTON_SIZE[1] 
         self.B.append(button.Button('LEVELS', screen, e, (w, h))) 
 
-        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
-                               'name': 'moveBoxesGame'})
+        e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame'})
         h -= 2*button.BUTTON_SIZE[1] 
         self.B.append(button.Button('START', screen, e, (w, h))) 
+        
+    
+    """Button rendering."""
+    def render(self):
+        screen = self.application.screen
+        screen.fill((0,0,0))
+        for b in self.B:
+            b.render()
         pygame.display.update()
 
               
@@ -42,7 +45,6 @@ class Menu(GUI):
                 return
         if e.type == pygame.USEREVENT:
             if e.name == 'moveBoxesGame':
-                moveBoxesGame.MoveBoxesGame(e.app, e.name)
                 return e.name
             else:
                 choose_level.ChooseLevel(e.app, e.name)

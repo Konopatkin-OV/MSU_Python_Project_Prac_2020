@@ -21,8 +21,8 @@ class MoveBoxesGame(GUI):
                 except IOError:
                     print(f'Level {name} is not valid.')
 
-        self.current_level = self.levels['1']
-
+        self.current_level = self.levels['0']
+        
         # images for game objects
         # default monochrome colors
         self.images = {}
@@ -61,6 +61,51 @@ class MoveBoxesGame(GUI):
 
         # False if player can only push boxes
         self.allow_all_box_moves = True
+
+        # buttons
+        self.buttons = []
+        screen = self.application.screen
+
+        # button to menu
+        button_event = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
+        self.buttons.append(button.Button('MENU', screen, button_event, (0,0)))       
+
+        # control buttons        
+        button_size = 35,35
+        button_color = 70, 70, 70
+        font_size = 15
+        
+        w = screen.get_width() - 13*button_size[0]/4
+        h = screen.get_height() - 6*button_size[1]
+        button_event = pygame.event.Event(pygame.locals.K_UP)
+        b_up = button.Button('up', screen, button_event, (w,h), button_size, button_color, font_size)
+        self.buttons.append(b_up)
+
+        button_size_1 = 46, 30
+        h += button_size[1] + button_size_1[1]/2
+        w -= button_size_1[0]/2 - button_size[0]/2 
+        button_event = pygame.event.Event(pygame.locals.K_DOWN)
+        b_down = button.Button('down', screen, button_event, (w,h), button_size_1, button_color, font_size)
+        self.buttons.append(b_down)
+
+        w -= 5*button_size[0]/3
+        h = screen.get_height() - 5*button_size[1]
+        button_event = pygame.event.Event(pygame.locals.K_LEFT)
+        b_left = button.Button('left', screen, button_event, (w,h), button_size_1, button_color, font_size)
+        self.buttons.append(b_left)
+
+        w += 10*button_size[0]/3
+        button_event = pygame.event.Event(pygame.locals.K_RIGHT)
+        b_right = button.Button('right', screen, button_event, (w,h), button_size_1, button_color, font_size)
+        self.buttons.append(b_right)
+        
+#        w -= 5*button_size[0]/2
+        button_size_2 = 100, 30
+        w = screen.get_width() - 13*button_size[0]/4 - (button_size_2[0]/2 - button_size[0]/2)
+        h += 2*button_size[1]   
+        button_event = pygame.event.Event(pygame.locals.K_e)
+        b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
+        self.buttons.append(b_grab)
 
     def set_image(self, name, image):
         self.images[name] = image
@@ -122,12 +167,8 @@ class MoveBoxesGame(GUI):
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # render menu elements (TODO)
-        # button to menu
-        button_event = pygame.event.Event(pygame.USEREVENT, 
-                              {'app': self.application, 'name': '__main__'})
-        self.button = button.Button('MENU', screen, button_event, (0,0))        
-
-
+        for b in self.buttons:
+            b.render()
         pygame.display.update()
 
     def process_event(self, event):
@@ -179,14 +220,15 @@ class MoveBoxesGame(GUI):
                 else:
                     if self.current_level.is_empty(g_x, g_y):
                         self.current_level.player.move(g_x, g_y)
-        
         # press a button
-        elif event.type == pygame.locals.MOUSEBUTTONDOWN and self.button.rect.collidepoint(event.pos):
-            self.button.press()
+        elif event.type == pygame.locals.MOUSEBUTTONDOWN:
+            for b in self.buttons:
+                if b.rect.collidepoint(event.pos):
+                    b.press()
         elif event.type == pygame.locals.USEREVENT:
-            menu.Menu(event.app, event.name)
             return event.name
-    
+
+
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
