@@ -70,6 +70,16 @@ class MoveBoxesGame(GUI):
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
         self.buttons.append(button.Button('MENU', screen, button_event, (0,0)))       
 
+        # next level button
+        w = screen.get_width() - button.BUTTON_SIZE[0]
+        button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'next'})
+        self.buttons.append(button.Button('NEXT', screen, button_event, (w,0)))        
+
+        # restart button
+        w -= 5*button.BUTTON_SIZE[0]/4
+        button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'this'})
+        self.buttons.append(button.Button('RESTART', screen, button_event, (w,0)))
+
         # control buttons        
         button_size = 35,35
         button_color = pygame.Color(50, 50, 50) #(70, 70, 70)
@@ -99,13 +109,13 @@ class MoveBoxesGame(GUI):
         b_right = button.Button('right', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons.append(b_right)
         
-#        w -= 5*button_size[0]/2
         button_size_2 = 100, 30
         w = screen.get_width() - 13*button_size[0]/4 - (button_size_2[0]/2 - button_size[0]/2)
         h += 2*button_size[1]   
         button_event = pygame.event.Event(pygame.locals.K_e)
         b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
-        self.buttons.append(b_grab)
+        self.buttons.append(b_grab) 
+   
 
     def set_image(self, name, image):
         self.images[name] = image
@@ -232,9 +242,20 @@ class MoveBoxesGame(GUI):
                 if b.rect.collidepoint(event.pos):
                     b.press()
         elif event.type == pygame.locals.USEREVENT:
-            return event.name
-
-
+            if event.name == '__main__':
+                return event.name
+            elif event.name == 'moveBoxesGame':
+                if event.lvl == 'next':
+                    if self.current_level.is_complete:
+                        try:
+                            self.current_level = self.levels[str(int(self.current_level.name)+1)]
+                        except LookupError:
+                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
+                    else:
+                        print(f'Level {self.current_level.name} is not complete.')
+                elif event.lvl == 'this':
+                    self.current_level.reset()
+ 
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
