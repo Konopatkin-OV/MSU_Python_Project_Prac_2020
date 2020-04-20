@@ -14,8 +14,6 @@ class Button():
  
         # create button text
         font_name = pygame.font.match_font('arial')
-
-        print(pygame.font.match_font('alnilettc')) 
         self.font = pygame.font.Font(font_name, font_size)
 
         self.name = name    
