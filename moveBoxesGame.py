@@ -5,6 +5,7 @@ import pygame
 import pygame.locals
 import menu
 import button
+import label
 
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
@@ -115,7 +116,17 @@ class MoveBoxesGame(GUI):
         button_event = pygame.event.Event(pygame.locals.K_e)
         b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
         self.buttons.append(b_grab) 
-   
+
+        # labels
+        self.labels = []
+
+        # current level label
+        w = screen.get_width()/2 - label.LABEL_SIZE[0]/2
+        self.labels.append(label.Label(screen, (w,0)))  
+
+        # current moves amount
+        h = screen.get_height() - label.LABEL_SIZE[1]
+        self.labels.append(label.Label(screen, (0, h)))
 
     def set_image(self, name, image):
         self.images[name] = image
@@ -179,6 +190,11 @@ class MoveBoxesGame(GUI):
         # render menu elements (TODO)
         for b in self.buttons:
             b.render()
+        
+        # render labels
+        self.labels[0].render(f'Level {self.current_level.name}')
+        self.labels[1].render(f'Moves: {self.moves_made}')
+
         pygame.display.update()
 
     def process_event(self, event):
@@ -254,7 +270,7 @@ class MoveBoxesGame(GUI):
                     else:
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
-                    self.current_level.reset()
+                    self.reset()
  
     def reset(self):
         self.current_level.reset()
