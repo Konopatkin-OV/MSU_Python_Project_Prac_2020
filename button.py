@@ -13,10 +13,15 @@ class Button():
         self.screen = screen
  
         # create button text
-        self.font = pygame.font.Font(pygame.font.get_default_font(), font_size)        
+        font_name = pygame.font.match_font('arial')
+
+        print(pygame.font.match_font('alnilettc')) 
+        self.font = pygame.font.Font(font_name, font_size)
+
         self.name = name    
         self.color = color     
-
+   
+    """Render a button."""
     def render(self,):
         self.screen.fill(self.color, self.rect)
      
