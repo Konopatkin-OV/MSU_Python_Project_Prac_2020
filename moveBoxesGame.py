@@ -72,7 +72,7 @@ class MoveBoxesGame(GUI):
 
         # control buttons        
         button_size = 35,35
-        button_color = 70, 70, 70
+        button_color = pygame.Color(50, 50, 50) #(70, 70, 70)
         font_size = 15
         
         w = screen.get_width() - 13*button_size[0]/4
@@ -222,6 +222,12 @@ class MoveBoxesGame(GUI):
                         self.current_level.player.move(g_x, g_y)
         # press a button
         elif event.type == pygame.locals.MOUSEBUTTONDOWN:
+            for b in self.buttons:
+                if b.rect.collidepoint(event.pos):
+                    b.color, b.new_color = b.new_color, b.color
+                    b.render()
+        # release a button
+        elif event.type == pygame.locals.MOUSEBUTTONUP:
             for b in self.buttons:
                 if b.rect.collidepoint(event.pos):
                     b.press()

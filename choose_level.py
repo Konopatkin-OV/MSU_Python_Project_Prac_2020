@@ -46,6 +46,11 @@ class ChooseLevel(GUI):
         for b in self.B:
             # indicates if button was pressed 
             if e.type is pygame.MOUSEBUTTONDOWN and b.rect.collidepoint(e.pos):
+                b.color, b.new_color = b.new_color, b.color
+                b.render()
+                return
+            # indicates if button was released
+            elif e.type is pygame.MOUSEBUTTONUP and b.rect.collidepoint(e.pos):
                 b.press()
                 return
         if e.type == pygame.USEREVENT:
