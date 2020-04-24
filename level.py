@@ -10,6 +10,7 @@ class Level:
         self.field = []
         self.boxes = []
         self.places_for_boxes = []
+        self.name = file_name
 
         file = open(f'levels/{file_name}.lvl', 'r')
         for x, string in enumerate(file):
