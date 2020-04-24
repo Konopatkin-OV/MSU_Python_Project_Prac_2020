@@ -60,5 +60,7 @@ class Menu(GUI):
             elif e.name == 'ChooseLevel':
                 choose_level.ChooseLevel(e.app, e.name)
                 return e.name
+            elif e.name == "NewLevel":
+                return e.name
 
 

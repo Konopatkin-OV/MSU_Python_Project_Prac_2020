@@ -3,6 +3,7 @@ import pygame.locals
 from gui import GUI
 from moveBoxesGame import MoveBoxesGame
 from menu import Menu
+from editing.editor import LevelEditor
 
 
 # the main application class which initialises pygame and rules over interfaces...
@@ -49,6 +50,8 @@ class Application(object):
 
 if __name__ == '__main__':
     app = Application()
-    menu = Menu(app, '__main__') 
+    menu = Menu(app, '__main__')
+    gui = MoveBoxesGame(app, 'moveBoxesGame')
+    levelEditor = LevelEditor(app, "NewLevel")
     app.start()
 

@@ -272,7 +272,13 @@ class MoveBoxesGame(GUI):
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
                     self.reset()
- 
+
+    def add_level(self, name: str):
+        try:
+            self.levels[name] = Level(name)
+        except IOError:
+            print(f'Level {name} is not valid.')
+
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0

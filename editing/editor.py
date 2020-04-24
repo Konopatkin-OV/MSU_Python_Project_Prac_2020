@@ -1,16 +1,17 @@
 from gui import GUI
 import pygame
 from pygame.event import Event
-from pygame import Surface
+from pygame import Surface, Rect
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import scale
 from editing.customlevel import CustomLevel
-from button import Button
+from button import Button, BUTTON_SIZE
+
 
 class LevelEditor(GUI):
     def __init__(self, app, name: str):
         super().__init__(app, name)
-        self.custom_level = CustomLevel()
+        self.custom_level = CustomLevel(app)
 
         self.images = {'background': Surface(self.application.screen.get_size()),
                        'free_cell': Surface((64, 64)),
@@ -23,8 +24,12 @@ class LevelEditor(GUI):
         self.images['free_cell'].fill((150, 150, 150))
         self.images['wall'].fill((200, 100, 100))
         self.images['box_cell'].fill((100, 100, 200))
-        self.images['player'].fill((50, 150, 50))
-        self.images['box'].fill((100, 50, 0))
+
+        rect = Rect(3, 3, 58, 58)
+        self.images['player'].fill((150, 150, 150))
+        self.images['player'].fill((50, 150, 50), rect)
+        self.images['box'].fill((150, 150, 150))
+        self.images['box'].fill((100, 50, 0), rect)
 
         self.dragged_picture = None
         self.still_pictures = [StillPicture(' ', -2, -1),
@@ -37,10 +42,17 @@ class LevelEditor(GUI):
         self.offset_x, self.offset_y = None, None
         self.calculate_cell_size()
 
-        menu_event = Event(pygame.USEREVENT,
-                             {'app': self.application, 'name': '__main__'})
-        self.menu_button = Button('MENU', self.application.screen,
-                                  menu_event, (0, 0))
+        self.buttons = [
+            Button(
+                'MENU', self.application.screen,
+                Event(pygame.USEREVENT, {'app': self.application, 'name': '__main__'}),
+                (0, 0)),
+            Button(
+                'SAVE',
+                self.application.screen,
+                Event(pygame.USEREVENT, {'app': self.application, 'name': 'save'}),
+                (self.application.screen.get_width() - BUTTON_SIZE[0], 0))
+        ]
 
     def clear(self):
         pass
@@ -69,10 +81,8 @@ class LevelEditor(GUI):
         path_image = scale(self.images['free_cell'], (self.cell_size, self.cell_size))
         wall_image = scale(self.images['wall'], (self.cell_size, self.cell_size))
         box_cell_image = scale(self.images['box_cell'], (self.cell_size, self.cell_size))
-
-        moving_size = int(0.9 * self.cell_size)
-        player_image = scale(self.images['player'], (moving_size, moving_size))
-        box_image = scale(self.images['box'], (moving_size, moving_size))
+        player_image = scale(self.images['player'], (self.cell_size, self.cell_size))
+        box_image = scale(self.images['box'], (self.cell_size, self.cell_size))
 
         symbols_to_images = {' ': path_image,
                              'w': wall_image,
@@ -98,10 +108,35 @@ class LevelEditor(GUI):
             screen.blit(symbols_to_images[self.dragged_picture.symbol],
                         (self.dragged_picture.x, self.dragged_picture.y))
 
+        # render buttons
+        for button in self.buttons:
+            button.render()
+
         pygame.display.update()
 
     def process_event(self, event: Event):
-        if event.type == MOUSEMOTION:
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == 1:
+                if self.dragged_picture is None:
+                    screen_x, screen_y = event.pos
+                    field_x = int((screen_x - self.offset_x) // self.cell_size)
+                    field_y = int((screen_y - self.offset_y) // self.cell_size)
+                    for still_picture in self.still_pictures:
+                        if still_picture.x == field_x and still_picture.y == field_y:
+                            x = still_picture.x * self.cell_size + self.offset_x
+                            y = still_picture.y * self.cell_size + self.offset_y
+                            offset_x = screen_x - x
+                            offset_y = screen_y - y
+                            self.dragged_picture = DraggedPicture(
+                                still_picture.symbol, x, y, offset_x, offset_y)
+                            return
+
+                    for button in self.buttons:
+                        if button.rect.collidepoint(event.pos):
+                            button.press()
+                            return
+
+        elif event.type == MOUSEMOTION:
             if self.dragged_picture is not None:
                 self.dragged_picture.move(*event.pos)
 
@@ -115,22 +150,13 @@ class LevelEditor(GUI):
                 self.calculate_cell_size()
                 self.dragged_picture = None
 
-        if event.type == MOUSEBUTTONDOWN and event.button == 1:
-            if self.dragged_picture is None:
-                screen_x, screen_y = event.pos
-                field_x = int((screen_x - self.offset_x) // self.cell_size)
-                field_y = int((screen_y - self.offset_y) // self.cell_size)
-                for still_picture in self.still_pictures:
-                    if still_picture.x == field_x and still_picture.y == field_y:
-                        x = still_picture.x * self.cell_size + self.offset_x
-                        y = still_picture.y * self.cell_size + self.offset_y
-                        offset_x = screen_x - x
-                        offset_y = screen_y - y
-                        self.dragged_picture = DraggedPicture(
-                            still_picture.symbol, x, y, offset_x, offset_y)
-                        break
-            elif self.menu_button.rect.collidepoint(event.pos):
-                self.menu_button.press()
+        elif event.type == pygame.locals.USEREVENT:
+            if event.name == '__main__':
+                return event.name
+            elif event.name == 'save':
+                self.custom_level.save()
+                self.buttons[-1].color, self.buttons[-1].new_color = \
+                    self.buttons[-1].new_color, self.buttons[-1].color
 
 
 class StillPicture:
