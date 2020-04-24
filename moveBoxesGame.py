@@ -1,10 +1,11 @@
 from gui import GUI
-from levels import Level
+from level import Level
 import os
 import pygame
 import pygame.locals
 import menu
 import button
+
 
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
@@ -12,7 +13,7 @@ class MoveBoxesGame(GUI):
 
         self.levels = {}
 
-        root, dirs, files = next(os.walk('lvls/', topdown=True))
+        root, dirs, files = next(os.walk('levels/', topdown=True))
         for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
@@ -80,7 +81,7 @@ class MoveBoxesGame(GUI):
 
         # rendering the game field
         # compute cell size and offset to render the field fully in the center of screen
-        c_w, c_h = self.current_level.dimensions
+        c_w, c_h = self.current_level.width, self.current_level.height
         cell_size = int(min(s_w / c_w, s_h / c_h))
         off_x, off_y = (gf_off_x + (s_w - cell_size * c_w) / 2, gf_off_y + (s_h - cell_size * c_h) / 2)
 
@@ -147,7 +148,7 @@ class MoveBoxesGame(GUI):
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
                 dx, dy = cur_dir
                 x, y = self.current_level.player.x, self.current_level.player.y
-                c_w, c_h = self.current_level.dimensions
+                c_w, c_h = self.current_level.width, self.current_level.height
                 g_x, g_y = x + dx, y + dy # goal cell
 
                 if self.attempting_grabbing:

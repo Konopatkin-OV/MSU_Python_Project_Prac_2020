@@ -3,8 +3,9 @@ from gui import GUI
 import button
 import moveBoxesGame
 import os
-from levels import Level
+from level import Level
 import menu
+
 
 class ChooseLevel(GUI):
     def __init__(self, app, name):
