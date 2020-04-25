@@ -50,8 +50,8 @@ class Application(object):
 
 if __name__ == '__main__':
     app = Application()
-    menu = Menu(app, '__main__')
     gui = MoveBoxesGame(app, 'moveBoxesGame')
     levelEditor = LevelEditor(app, "NewLevel")
+    menu = Menu(app, '__main__')
     app.start()
 

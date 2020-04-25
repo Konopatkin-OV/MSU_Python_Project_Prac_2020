@@ -5,6 +5,7 @@ import moveBoxesGame
 import os
 from level import Level
 import menu
+import label
 
 
 class ChooseLevel(GUI):
@@ -22,10 +23,13 @@ class ChooseLevel(GUI):
             e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame', 'lvl': name})
             self.B.append(button.Button(f'LEVEL {name}', screen, e, (w, h)))
             h += 2*button.BUTTON_SIZE[1]
+
         # button to menu
         e = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
-        self.B.append(button.Button('BACK', screen, e, (w,h)))        
-        
+        self.B.append(button.Button('BACK', screen, e, (w, h)))
+
+        w2 = screen.get_width() / 2 - label.LABEL_SIZE[0] / 2
+        self.label = (label.Label(screen, (w2, 0), color=pygame.Color(70, 50, 70)))
 
     """Button rendering."""
     def render(self):
@@ -33,6 +37,7 @@ class ChooseLevel(GUI):
         screen.fill((0,0,0))
         for b in self.B:
             b.render() 
+        self.label.render('LEVELS')
         pygame.display.update()
 
     """Button event handler."""

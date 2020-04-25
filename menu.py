@@ -3,35 +3,48 @@ from gui import GUI
 import button
 import choose_level
 import moveBoxesGame
+import settings
+import label
 
 class Menu(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
 
-        #button list for menu
+        # button list for menu
         self.B = []
         screen = self.application.screen
         w = screen.get_width()/2-button.BUTTON_SIZE[0]/2
-        h = screen.get_height()/2+button.BUTTON_SIZE[1]/2
-        
+        button_num = 5
+        num_buttons_per_screen =  screen.get_height()/2/button.BUTTON_SIZE[1]       
+        offset = (num_buttons_per_screen - button_num)/2
+    
+        h = offset*2*button.BUTTON_SIZE[1]
+        e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame'})
+        self.B.append(button.Button('START', screen, e, (w, h))) 
+
+        h += 2* button.BUTTON_SIZE[1] 
+        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
+                               'name': 'ChooseLevel'})
+        self.B.append(button.Button('LEVELS', screen, e, (w, h))) 
+
+        h += 2* button.BUTTON_SIZE[1] 
         e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'NewLevel'})
         self.B.append(button.Button('NEW LEVEL', screen, e, (w, h)))
 
-        h += 4*button.BUTTON_SIZE[1]/2
+        h += 2* button.BUTTON_SIZE[1]
+        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'Settings'})
+        self.B.append(button.Button('SETTINGS', screen, e, (w, h)))
+
+
+        h += 2* button.BUTTON_SIZE[1] 
         e = pygame.event.Event(pygame.QUIT)
         self.B.append(button.Button('EXIT', screen, e, (w, h)))
-     
-        e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
-                               'name': 'ChooseLevel'})
-        h -= 4*button.BUTTON_SIZE[1] 
-        self.B.append(button.Button('LEVELS', screen, e, (w, h))) 
 
-        e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame'})
-        h -= 2*button.BUTTON_SIZE[1] 
-        self.B.append(button.Button('START', screen, e, (w, h))) 
-         
-        self.render()
-        
+        w2 = screen.get_width()/2 - label.LABEL_SIZE[0]/2
+        self.label = (label.Label(screen, (w2,0), color = pygame.Color(70, 50, 70)))
+
+        choose_level.ChooseLevel(app, 'ChooseLevel')
+        settings.Settings(app, 'Settings')        
     
     """Button rendering."""
     def render(self):
@@ -39,8 +52,8 @@ class Menu(GUI):
         screen.fill((0,0,0))
         for b in self.B:
             b.render()
+        self.label.render('MENU')
         pygame.display.update()
-              
 
     """Button event handler."""
     def process_event(self, e):
@@ -55,12 +68,5 @@ class Menu(GUI):
                 b.press()
                 return
         if e.type == pygame.USEREVENT:
-            if e.name == 'moveBoxesGame':
-                return e.name
-            elif e.name == 'ChooseLevel':
-                choose_level.ChooseLevel(e.app, e.name)
-                return e.name
-            elif e.name == "NewLevel":
-                return e.name
-
+            return e.name
 
