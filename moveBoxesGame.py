@@ -6,6 +6,7 @@ import pygame.locals
 import menu
 import button
 import label
+from image import WALL_IMAGE, PATH_IMAGE, SPACE_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
 
 class MoveBoxesGame(GUI):
@@ -28,19 +29,19 @@ class MoveBoxesGame(GUI):
         # images for game objects
         # default monochrome colors
         self.images = {}
-        self.images['background'] = pygame.surface.Surface(self.application.screen.get_size())
+        self.images['background'] = pygame.Surface(self.application.screen.get_size())
         self.images['background'].fill((0, 0, 0))
-        self.images['free_cell'] = pygame.surface.Surface((64, 64))
-        self.images['free_cell'].fill((150, 150, 150))
-        self.images['wall'] = pygame.surface.Surface((64, 64))
-        self.images['wall'].fill((200, 100, 100))
-        self.images['box_cell'] = pygame.surface.Surface((64, 64))
-        self.images['box_cell'].fill((100, 100, 200))
-        self.images['player'] = pygame.surface.Surface((64, 64))
-        self.images['player'].fill((50, 150, 50))
-        self.images['box'] = pygame.surface.Surface((64, 64))
-        self.images['box'].fill((100, 50, 0))
-        self.images['grab'] = pygame.surface.Surface((64, 64), flags=pygame.locals.SRCALPHA)
+        self.images['free_cell'] = pygame.Surface((128, 128))
+        self.images['free_cell'].blit(PATH_IMAGE, (0, 0))
+        self.images['wall'] = pygame.Surface((128, 128))
+        self.images['wall'].blit(WALL_IMAGE, (0, 0))
+        self.images['box_cell'] = pygame.Surface((128, 128))
+        self.images['box_cell'].blit(SPACE_IMAGE, (0, 0))
+        self.images['player'] = pygame.Surface((128, 128))
+        self.images['player'].blit(PLAYER_IMAGE, (0, 0))
+        self.images['box'] = pygame.Surface((128, 128))
+        self.images['box'].blit(BOX_IMAGE, (0, 0))
+        self.images['grab'] = pygame.Surface((64, 64), flags=pygame.locals.SRCALPHA)
         self.images['grab'].fill((0, 0, 0, 0))
         pygame.draw.circle(self.images['grab'], (50, 100, 200), (32, 32), 25, 4)
 
@@ -232,7 +233,7 @@ class MoveBoxesGame(GUI):
                 old_pos = None
             self.render_sq_object(self.images['box'], cell_size - delta_s, offset, cell_size, box.get_pos(), old_pos)
 
-        self.render_sq_object(self.images['player'], cell_size - delta_s, offset, cell_size, 
+        self.render_sq_object(self.images['player'], cell_size - delta_s, offset, cell_size,
                               self.current_level.player.get_pos(), 
                               self.moving_old_poses['player'] if self.is_moving else None)
 
