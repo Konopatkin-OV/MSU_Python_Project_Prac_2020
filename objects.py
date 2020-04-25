@@ -14,6 +14,9 @@ class GameEntity(object):
         self.x = x
         self.y = y
 
+    def get_pos(self):
+        return (self.x, self.y)
+
 
 class Player(GameEntity):
     def __init__(self, x: int, y: int):
