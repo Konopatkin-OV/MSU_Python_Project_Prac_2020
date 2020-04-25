@@ -65,6 +65,14 @@ class MoveBoxesGame(GUI):
         # False if player can only push boxes
         self.allow_all_box_moves = True
 
+        # time in seconds to complete one step animation
+        self.move_duration = 0.75
+
+        #animation parameters
+        self.is_moving = False
+        self.moving_time = 0.0
+        self.moving_old_poses = {'player': None, 'box': None}
+
         # buttons
         self.buttons = {}
         screen = self.application.screen
@@ -139,6 +147,26 @@ class MoveBoxesGame(GUI):
     def set_image(self, name, image):
         self.images[name] = image
 
+    def process_frame(self, delta_t):
+        if self.is_moving:
+            self.moving_time += delta_t
+            if self.moving_time >= self.move_duration:
+                self.is_moving = False
+                self.moving_time = 0.0
+
+    def start_move(self, player_goal, box_goal=None):
+        if self.move_duration > 0.0:
+            self.is_moving = True
+            self.moving_time = 0.0
+            self.moving_old_poses['player'] = self.current_level.player.get_pos()
+            if self.grabbed_box is not None:
+                self.moving_old_poses['box'] = self.grabbed_box.get_pos()
+
+        self.current_level.player.move(*player_goal)
+        if self.grabbed_box is not None and box_goal is not None:
+            self.grabbed_box.move(*box_goal)
+        self.moves_made += 1
+
     def render(self):
         screen = self.application.screen
 
@@ -179,19 +207,19 @@ class MoveBoxesGame(GUI):
         delta_s = int((1.0 - moving_coeff) * cell_size)
         cur_img = pygame.transform.scale(self.images['box'], (cell_size - delta_s, cell_size - delta_s))
         for box in self.current_level.boxes:
-            x, y = box.x, box.y
+            x, y = box.get_pos()
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
-        x, y = self.current_level.player.x, self.current_level.player.y
+        x, y = self.current_level.player.get_pos()
         cur_img = pygame.transform.scale(self.images['player'], (cell_size - delta_s, cell_size - delta_s))
         screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # magic grabbing circle on player trying to grab or on the grabbed box
         if self.grabbed_box is not None or self.attempting_grabbing:
             if self.grabbed_box is not None:
-                x, y = self.grabbed_box.x, self.grabbed_box.y
+                x, y = self.grabbed_box.get_pos()
             else:
-                x, y = self.current_level.player.x, self.current_level.player.y
+                x, y = self.current_level.player.get_pos()
             cur_img = pygame.transform.scale(self.images['grab'], (cell_size - delta_s, cell_size - delta_s))
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
@@ -236,7 +264,7 @@ class MoveBoxesGame(GUI):
                 # get direction of moving
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
                 dx, dy = cur_dir
-                x, y = self.current_level.player.x, self.current_level.player.y
+                x, y = self.current_level.player.get_pos()
                 c_w, c_h = self.current_level.width, self.current_level.height
                 g_x, g_y = x + dx, y + dy # goal cell
 
@@ -246,7 +274,7 @@ class MoveBoxesGame(GUI):
                         self.grabbed_box = box
                         self.attempting_grabbing = False
                 elif self.grabbed_box is not None:
-                    b_x, b_y = self.grabbed_box.x, self.grabbed_box.y
+                    b_x, b_y = self.grabbed_box.get_pos()
                     # dir to grabbed box and goal cell of grabbed box
                     bd_x, bd_y = b_x - x, b_y - y
                     bg_x, bg_y = b_x + dx, b_y + dy
@@ -264,13 +292,10 @@ class MoveBoxesGame(GUI):
                                self.current_level.is_empty(bg_x, bg_y):
                                 good_move = True
                     if good_move:
-                        self.current_level.player.move(g_x, g_y)
-                        self.grabbed_box.move(bg_x, bg_y)
-                        self.moves_made += 1
+                        self.start_move((g_x, g_y), (bg_x, bg_y))
                 else:
                     if self.current_level.is_empty(g_x, g_y):
-                        self.current_level.player.move(g_x, g_y)
-                        self.moves_made += 1
+                        self.start_move((g_x, g_y))
         # press a button
         elif event.type == pygame.locals.MOUSEBUTTONDOWN:
             for k, b in self.buttons.items():
