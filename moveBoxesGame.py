@@ -23,7 +23,6 @@ class MoveBoxesGame(GUI):
                 except IOError:
                     print(f'Level {name} is not valid.')
 
-        print(self.levels)
         self.current_level = self.levels['0']
         
         # images for game objects
@@ -66,7 +65,7 @@ class MoveBoxesGame(GUI):
         self.allow_all_box_moves = True
 
         # time in seconds to complete one step animation
-        self.move_duration = 0.75
+        self.move_duration = 0.5
 
         #animation parameters
         self.is_moving = False
@@ -155,17 +154,18 @@ class MoveBoxesGame(GUI):
                 self.moving_time = 0.0
 
     def start_move(self, player_goal, box_goal=None):
-        if self.move_duration > 0.0:
-            self.is_moving = True
-            self.moving_time = 0.0
-            self.moving_old_poses['player'] = self.current_level.player.get_pos()
-            if self.grabbed_box is not None:
-                self.moving_old_poses['box'] = self.grabbed_box.get_pos()
+        if not self.is_moving:
+            if self.move_duration > 0.0:
+                self.is_moving = True
+                self.moving_time = 0.0
+                self.moving_old_poses['player'] = self.current_level.player.get_pos()
+                if self.grabbed_box is not None:
+                    self.moving_old_poses['box'] = self.grabbed_box.get_pos()
 
-        self.current_level.player.move(*player_goal)
-        if self.grabbed_box is not None and box_goal is not None:
-            self.grabbed_box.move(*box_goal)
-        self.moves_made += 1
+            self.current_level.player.move(*player_goal)
+            if self.grabbed_box is not None and box_goal is not None:
+                self.grabbed_box.move(*box_goal)
+            self.moves_made += 1
 
     def render(self):
         screen = self.application.screen
@@ -208,11 +208,30 @@ class MoveBoxesGame(GUI):
         cur_img = pygame.transform.scale(self.images['box'], (cell_size - delta_s, cell_size - delta_s))
         for box in self.current_level.boxes:
             x, y = box.get_pos()
-            screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
+            if box is self.grabbed_box:
+                if not self.is_moving:
+                    move_off_x, move_off_y = 0, 0
+                else:
+                    old_x, old_y = self.moving_old_poses['box']
+                    progress = (1.0 - self.moving_time / self.move_duration)
+                    move_off_x = (old_x - x) * progress
+                    move_off_y = (old_y - y) * progress
+                screen.blit(cur_img, (int(off_x + (x + move_off_x) * cell_size + delta_s // 2), 
+                                      int(off_y + (y + move_off_y) * cell_size + delta_s // 2)))
+            else:
+                screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         x, y = self.current_level.player.get_pos()
         cur_img = pygame.transform.scale(self.images['player'], (cell_size - delta_s, cell_size - delta_s))
-        screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
+        if not self.is_moving:
+            move_off_x, move_off_y = 0, 0
+        else:
+            old_x, old_y = self.moving_old_poses['player']
+            progress = (1.0 - self.moving_time / self.move_duration)
+            move_off_x = (old_x - x) * progress
+            move_off_y = (old_y - y) * progress
+        screen.blit(cur_img, (int(off_x + (x + move_off_x) * cell_size + delta_s // 2), 
+                              int(off_y + (y + move_off_y) * cell_size + delta_s // 2)))
 
         # magic grabbing circle on player trying to grab or on the grabbed box
         if self.grabbed_box is not None or self.attempting_grabbing:
@@ -220,8 +239,17 @@ class MoveBoxesGame(GUI):
                 x, y = self.grabbed_box.get_pos()
             else:
                 x, y = self.current_level.player.get_pos()
+            if not self.is_moving:
+                move_off_x, move_off_y = 0, 0
+            else:
+                old_x, old_y = self.moving_old_poses['box']
+                progress = (1.0 - self.moving_time / self.move_duration)
+                move_off_x = (old_x - x) * progress
+                move_off_y = (old_y - y) * progress
             cur_img = pygame.transform.scale(self.images['grab'], (cell_size - delta_s, cell_size - delta_s))
-            screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
+            screen.blit(cur_img, (int(off_x + (x + move_off_x) * cell_size + delta_s // 2), 
+                                  int(off_y + (y + move_off_y) * cell_size + delta_s // 2)))
+        # copypaste is evil...
 
         # render menu elements (TODO)
         for k, b in self.buttons.items():
