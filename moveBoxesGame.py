@@ -1,5 +1,5 @@
 from gui import GUI
-from levels import Level
+from level import Level
 import os
 import pygame
 import pygame.locals
@@ -7,13 +7,14 @@ import menu
 import button
 import label
 
+
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
 
         self.levels = {}
 
-        root, dirs, files = next(os.walk('lvls/', topdown=True))
+        root, dirs, files = next(os.walk('levels/', topdown=True))
         for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
@@ -94,32 +95,37 @@ class MoveBoxesGame(GUI):
         w = screen.get_width() - 13*button_size[0]/4
         h = screen.get_height() - 6*button_size[1]
 
-        button_event = pygame.event.Event(pygame.locals.K_UP)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_UP
         b_up = button.Button('up', screen, button_event, (w,h), button_size, button_color, font_size)
         self.buttons[0] = b_up
 
         button_size_1 = 46, 30
         h += button_size[1] + button_size_1[1]/2
         w -= button_size_1[0]/2 - button_size[0]/2 
-        button_event = pygame.event.Event(pygame.locals.K_DOWN)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_DOWN
         b_down = button.Button('down', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[1] = b_down
 
         w -= 5*button_size[0]/3
         h = screen.get_height() - 5*button_size[1]
-        button_event = pygame.event.Event(pygame.locals.K_LEFT)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_LEFT
         b_left = button.Button('left', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[2] = b_left
 
         w += 10*button_size[0]/3
-        button_event = pygame.event.Event(pygame.locals.K_RIGHT)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_RIGHT
         b_right = button.Button('right', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[3] = b_right
         
         button_size_2 = 100, 30
         w = screen.get_width() - 13*button_size[0]/4 - (button_size_2[0]/2 - button_size[0]/2)
         h += 2*button_size[1]   
-        button_event = pygame.event.Event(pygame.locals.K_e)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_e
         b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
         self.buttons['grab'] = b_grab 
 
@@ -152,7 +158,7 @@ class MoveBoxesGame(GUI):
 
         # rendering the game field
         # compute cell size and offset to render the field fully in the center of screen
-        c_w, c_h = self.current_level.dimensions
+        c_w, c_h = self.current_level.width, self.current_level.height
         cell_size = int(min(s_w / c_w, s_h / c_h))
         off_x, off_y = (gf_off_x + (s_w - cell_size * c_w) / 2, gf_off_y + (s_h - cell_size * c_h) / 2)
 
@@ -235,7 +241,7 @@ class MoveBoxesGame(GUI):
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
                 dx, dy = cur_dir
                 x, y = self.current_level.player.x, self.current_level.player.y
-                c_w, c_h = self.current_level.dimensions
+                c_w, c_h = self.current_level.width, self.current_level.height
                 g_x, g_y = x + dx, y + dy # goal cell
 
                 if self.attempting_grabbing:
@@ -295,10 +301,17 @@ class MoveBoxesGame(GUI):
                     self.reset()
                 elif event.lvl == 'previous':
                     try:
-                        self.current_level = self.levels[str(int(self.current_level.name)-1)]
+                        self.current_level = self.levels[str(int(self.current_level.name) - 1)]
                     except LookupError:
-#                        print(f'Level {(int(self.current_level.name)-1)} is not valid.')
-                        return '__main__' 
+                        #                        print(f'Level {(int(self.current_level.name)-1)} is not valid.')
+                        return '__main__'
+
+    def add_level(self, name: str):
+        try:
+            self.levels[name] = Level(name)
+        except IOError:
+            print(f'Level {name} is not valid.')
+
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
