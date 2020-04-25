@@ -4,15 +4,18 @@ from objects import Player, Box
 
 class Level:
     def __init__(self, file_name: str):
-        self.dimensions = None
+        self.width = None
+        self.height = None
         self.player = None
         self.field = []
         self.boxes = []
         self.places_for_boxes = []
         self.name = file_name
 
-        file = open(f'lvls/{file_name}.lvl', 'r')
+        file = open(f'levels/{file_name}.lvl', 'r')
         for x, string in enumerate(file):
+            if string == '\n':
+                continue
             line = []
             for y, symbol in enumerate(string):
                 if symbol == '\n':
@@ -35,9 +38,11 @@ class Level:
                     else:
                         raise IOError
             self.field.append(line)
+        file.close()
 
         # Check that each box has a place
-        if len(self.boxes) != len(self.places_for_boxes):
+        if len(self.boxes) == 0 or \
+                len(self.boxes) != len(self.places_for_boxes):
             raise IOError
 
         # Check that all the lines in a file have the same length
@@ -46,11 +51,12 @@ class Level:
 
         # Transpose the matrix
         self.field = list(map(list, zip(*self.field)))
-        self.dimensions = len(self.field), len(self.field[0])
+        self.width = len(self.field)
+        self.height = len(self.field[0])
 
     """Indicates that the level is complete."""
     def is_complete(self) -> bool:
-        return set(self.places_for_boxes) ==\
+        return set(self.places_for_boxes) == \
                set(map(lambda box: box.position, self.boxes))
 
     """Returns a box from the given cell or None if there is no box."""
@@ -62,8 +68,8 @@ class Level:
 
     """Indicates that the cell is available and has no boxes on it."""
     def is_empty(self, x: int, y: int) -> bool:
-        if x < 0 or x >= self.dimensions[0] or\
-           y < 0 or y >= self.dimensions[1]:
+        if x < 0 or x >= self.width or \
+                y < 0 or y >= self.height:
             return False
         return self.field[x][y] and not self.get_box(x, y)
 
@@ -72,6 +78,3 @@ class Level:
         self.player.reset()
         for box in self.boxes:
             box.reset()
-
-
-

@@ -6,6 +6,7 @@ import gradients
 TEXT_COLOR = 200, 200, 200
 BUTTON_SIZE = 130, 30
 
+
 class Button():
     def __init__(self, name, screen, event, coord, button_size = BUTTON_SIZE,  color = pygame.Color(70, 50, 70), font_size = 30):
 #        print(pygame.font.get_fonts())
