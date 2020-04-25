@@ -49,6 +49,7 @@ class Application(object):
 
 if __name__ == '__main__':
     app = Application()
+    gui = MoveBoxesGame(app, 'moveBoxesGame')
     menu = Menu(app, '__main__') 
     app.start()
 
