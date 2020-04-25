@@ -54,7 +54,6 @@ class Menu(GUI):
             b.render()
         self.label.render('MENU')
         pygame.display.update()
-              
 
     """Button event handler."""
     def process_event(self, e):
@@ -69,5 +68,5 @@ class Menu(GUI):
                 b.press()
                 return
         if e.type == pygame.USEREVENT:
-            return e.name    
+            return e.name
 
