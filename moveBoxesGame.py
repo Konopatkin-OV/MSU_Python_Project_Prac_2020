@@ -5,6 +5,7 @@ import pygame
 import pygame.locals
 import menu
 import button
+import label
 
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
@@ -63,22 +64,27 @@ class MoveBoxesGame(GUI):
         self.allow_all_box_moves = True
 
         # buttons
-        self.buttons = []
+        self.buttons = {}
         screen = self.application.screen
 
         # button to menu
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
-        self.buttons.append(button.Button('MENU', screen, button_event, (0,0)))       
+        self.buttons['menu'] = button.Button('MENU', screen, button_event, (0,0))
 
         # next level button
         w = screen.get_width() - button.BUTTON_SIZE[0]
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'next'})
-        self.buttons.append(button.Button('NEXT', screen, button_event, (w,0)))        
+        self.buttons['next_lvl'] = button.Button('NEXT', screen, button_event, (w,0))
+
+        # previous level button
+        h = 3*button.BUTTON_SIZE[1]/2        
+        button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'this'})
+        self.buttons['reset'] = button.Button('RESET', screen, button_event, (w,h))
 
         # restart button
         w -= 5*button.BUTTON_SIZE[0]/4
-        button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'this'})
-        self.buttons.append(button.Button('RESTART', screen, button_event, (w,0)))
+        button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'previous'})
+        self.buttons['prev_lvl'] = button.Button('PREVIOUS', screen, button_event, (w,0))
 
         # control buttons        
         button_size = 35,35
@@ -87,35 +93,46 @@ class MoveBoxesGame(GUI):
         
         w = screen.get_width() - 13*button_size[0]/4
         h = screen.get_height() - 6*button_size[1]
+
         button_event = pygame.event.Event(pygame.locals.K_UP)
         b_up = button.Button('up', screen, button_event, (w,h), button_size, button_color, font_size)
-        self.buttons.append(b_up)
+        self.buttons[0] = b_up
 
         button_size_1 = 46, 30
         h += button_size[1] + button_size_1[1]/2
         w -= button_size_1[0]/2 - button_size[0]/2 
         button_event = pygame.event.Event(pygame.locals.K_DOWN)
         b_down = button.Button('down', screen, button_event, (w,h), button_size_1, button_color, font_size)
-        self.buttons.append(b_down)
+        self.buttons[1] = b_down
 
         w -= 5*button_size[0]/3
         h = screen.get_height() - 5*button_size[1]
         button_event = pygame.event.Event(pygame.locals.K_LEFT)
         b_left = button.Button('left', screen, button_event, (w,h), button_size_1, button_color, font_size)
-        self.buttons.append(b_left)
+        self.buttons[2] = b_left
 
         w += 10*button_size[0]/3
         button_event = pygame.event.Event(pygame.locals.K_RIGHT)
         b_right = button.Button('right', screen, button_event, (w,h), button_size_1, button_color, font_size)
-        self.buttons.append(b_right)
+        self.buttons[3] = b_right
         
         button_size_2 = 100, 30
         w = screen.get_width() - 13*button_size[0]/4 - (button_size_2[0]/2 - button_size[0]/2)
         h += 2*button_size[1]   
         button_event = pygame.event.Event(pygame.locals.K_e)
         b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
-        self.buttons.append(b_grab) 
-   
+        self.buttons['grab'] = b_grab 
+
+        # labels
+        self.labels = []
+
+        # current level label
+        w = screen.get_width()/2 - label.LABEL_SIZE[0]/2
+        self.labels.append(label.Label(screen, (w,0)))  
+
+        # current moves amount
+        h = screen.get_height() - label.LABEL_SIZE[1]
+        self.labels.append(label.Label(screen, (0, h)))
 
     def set_image(self, name, image):
         self.images[name] = image
@@ -177,8 +194,13 @@ class MoveBoxesGame(GUI):
             screen.blit(cur_img, (off_x + x * cell_size + delta_s // 2, off_y + y * cell_size + delta_s // 2))
 
         # render menu elements (TODO)
-        for b in self.buttons:
+        for k, b in self.buttons.items():
             b.render()
+        
+        # render labels
+        self.labels[0].render(f'Level {self.current_level.name}', True)
+        self.labels[1].render(f'Moves: {self.moves_made}', True)
+
         pygame.display.update()
 
     def process_event(self, event):
@@ -192,6 +214,21 @@ class MoveBoxesGame(GUI):
                     self.grabbed_box = None
                 else:
                     self.attempting_grabbing = not self.attempting_grabbing
+            elif event.key == self.keys["next_lvl"]:
+                if self.current_level.is_complete:
+                        try:
+                            self.current_level = self.levels[str(int(self.current_level.name)+1)]
+                        except LookupError:
+#                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
+                            return '__main__'
+                else:
+                    print(f'Level {self.current_level.name} is not complete.')
+            elif event.key == self.keys["prev_lvl"]:
+                try:
+                    self.current_level = self.levels[str(int(self.current_level.name)-1)]
+                except LookupError:
+#                    print(f'Level {(int(self.current_level.name)-1)} is not valid.')
+                    return '__main__'
             elif event.key in self.keys["move"]:
                 # try moving, still no collision checking
                 # get direction of moving
@@ -232,13 +269,13 @@ class MoveBoxesGame(GUI):
                         self.current_level.player.move(g_x, g_y)
         # press a button
         elif event.type == pygame.locals.MOUSEBUTTONDOWN:
-            for b in self.buttons:
+            for k, b in self.buttons.items():
                 if b.rect.collidepoint(event.pos):
                     b.color, b.new_color = b.new_color, b.color
                     b.render()
         # release a button
         elif event.type == pygame.locals.MOUSEBUTTONUP:
-            for b in self.buttons:
+            for k, b in self.buttons.items():
                 if b.rect.collidepoint(event.pos):
                     b.press()
         elif event.type == pygame.locals.USEREVENT:
@@ -250,12 +287,18 @@ class MoveBoxesGame(GUI):
                         try:
                             self.current_level = self.levels[str(int(self.current_level.name)+1)]
                         except LookupError:
-                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
+#                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
+                            return '__main__'
                     else:
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
-                    self.current_level.reset()
- 
+                    self.reset()
+                elif event.lvl == 'previous':
+                    try:
+                        self.current_level = self.levels[str(int(self.current_level.name)-1)]
+                    except LookupError:
+#                        print(f'Level {(int(self.current_level.name)-1)} is not valid.')
+                        return '__main__' 
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
