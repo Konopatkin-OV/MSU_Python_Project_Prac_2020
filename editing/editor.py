@@ -84,7 +84,9 @@ class LevelEditor(GUI):
         self.symbols_to_images = {' ': smoothscale(self.images['free_cell'], size),
                                   'w': smoothscale(self.images['wall'], size),
                                   'p': smoothscale(self.images['player'], size),
+                                  'P': smoothscale(self.images['player'], size),
                                   'b': smoothscale(self.images['box'], size),
+                                  'B': smoothscale(self.images['box'], size),
                                   'x': smoothscale(self.images['box_cell'], size)}
 
     def render(self):
@@ -95,8 +97,12 @@ class LevelEditor(GUI):
         for x in range(self.custom_level.width):
             for y in range(self.custom_level.height):
                 symbol = self.custom_level.field[x][y]
-                if symbol in 'pbx':
+                if symbol in 'xpPbB':
                     screen.blit(self.symbols_to_images[' '],
+                                (self.offset_x + x * self.cell_size,
+                                 self.offset_y + y * self.cell_size))
+                if symbol in 'PB':
+                    screen.blit(self.symbols_to_images['x'],
                                 (self.offset_x + x * self.cell_size,
                                  self.offset_y + y * self.cell_size))
                 screen.blit(self.symbols_to_images[symbol],
@@ -155,8 +161,12 @@ class LevelEditor(GUI):
             if event.name == '__main__':
                 return event.name
             elif event.name == 'save':
-                name = self.custom_level.save()
-                self.application.GUIs['moveBoxesGame'].add_level(name)
+                try:
+                    name = self.custom_level.save()
+                    self.application.GUIs['moveBoxesGame'].add_level(name)
+                    self.clear()
+                except IOError:
+                    print('The level is not completed!')
                 self.buttons[-1].color, self.buttons[-1].new_color = \
                     self.buttons[-1].new_color, self.buttons[-1].color
 

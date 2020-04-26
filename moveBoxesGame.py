@@ -220,7 +220,7 @@ class MoveBoxesGame(GUI):
 
         # render objects
         cur_img = pygame.transform.smoothscale(self.images['box_cell'], (cell_size, cell_size))
-        for x, y in self.current_level.places_for_boxes:
+        for x, y in self.current_level.box_cells:
             screen.blit(cur_img, (off_x + x * cell_size, off_y + y * cell_size))
 
         cur_img = pygame.transform.smoothscale(self.images['box'], (cell_size, cell_size))

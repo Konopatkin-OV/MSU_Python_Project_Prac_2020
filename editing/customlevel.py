@@ -1,4 +1,5 @@
 import os
+from level import Level
 
 
 class CustomLevel:
@@ -66,8 +67,19 @@ class CustomLevel:
             self._put_wall(x, y)
         elif symbol == ' ':
             self._put_free_cell(x, y)
-        elif self.field[x][y] == ' ':
-            self.field[x][y] = symbol
+        elif symbol == 'x':
+            if self.field[x][y] in ' PB':
+                self.field[x][y] = 'x'
+        elif symbol == 'b':
+            if self.field[x][y] == ' ':
+                self.field[x][y] = 'b'
+            elif self.field[x][y] == 'x':
+                self.field[x][y] = 'B'
+        elif symbol == 'p':
+            if self.field[x][y] == ' ':
+                self.field[x][y] = 'p'
+            elif self.field[x][y] == 'x':
+                self.field[x][y] = 'P'
 
     def _put_wall(self, x: int, y: int):
         self.field[x][y] = 'w'
@@ -112,13 +124,13 @@ class CustomLevel:
     """Saves the level to a file."""
 
     def save(self) -> str:
+        Level.check_for_validity(self.field)
+
         order = 1
         while os.path.exists(f'levels/my level {order}.lvl'):
             order = order + 1
-
         name = f'my level {order}'
         file = open(f'levels/{name}.lvl', 'w')
-        # for row in map(lambda symbol: ''.join(symbol), zip(*self.field)):
         for line in zip(*self.field):
             for symbol in line:
                 file.write(symbol)
