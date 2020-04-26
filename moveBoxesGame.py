@@ -6,7 +6,8 @@ import pygame.locals
 import menu
 import button
 import label
-from image import WALL_IMAGE, PATH_IMAGE, SPACE_IMAGE, PLAYER_IMAGE, BOX_IMAGE
+from image import WALL_IMAGE, FREE_CELL_IMAGE,\
+    BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
 
 class MoveBoxesGame(GUI):
@@ -31,15 +32,15 @@ class MoveBoxesGame(GUI):
         self.images = {}
         self.images['background'] = pygame.Surface(self.application.screen.get_size())
         self.images['background'].fill((0, 0, 0))
-        self.images['free_cell'] = pygame.Surface((128, 128))
-        self.images['free_cell'].blit(PATH_IMAGE, (0, 0))
-        self.images['wall'] = pygame.Surface((128, 128))
+        self.images['free_cell'] = pygame.Surface((128, 128), pygame.SRCALPHA)
+        self.images['free_cell'].blit(FREE_CELL_IMAGE, (0, 0))
+        self.images['wall'] = pygame.Surface((128, 128), pygame.SRCALPHA)
         self.images['wall'].blit(WALL_IMAGE, (0, 0))
-        self.images['box_cell'] = pygame.Surface((128, 128))
-        self.images['box_cell'].blit(SPACE_IMAGE, (0, 0))
-        self.images['player'] = pygame.Surface((128, 128))
+        self.images['box_cell'] = pygame.Surface((128, 128), pygame.SRCALPHA)
+        self.images['box_cell'].blit(BOX_CELL_IMAGE, (0, 0))
+        self.images['player'] = pygame.Surface((128, 128), pygame.SRCALPHA)
         self.images['player'].blit(PLAYER_IMAGE, (0, 0))
-        self.images['box'] = pygame.Surface((128, 128))
+        self.images['box'] = pygame.Surface((128, 128), pygame.SRCALPHA)
         self.images['box'].blit(BOX_IMAGE, (0, 0))
         self.images['grab'] = pygame.Surface((64, 64), flags=pygame.locals.SRCALPHA)
         self.images['grab'].fill((0, 0, 0, 0))
@@ -172,7 +173,7 @@ class MoveBoxesGame(GUI):
     # because copypasting is evil!
     def render_sq_object(self, image, size, offset, cell_size, pos, old_move_pos=None):
         x, y = pos
-        image = pygame.transform.scale(image, (size, size))
+        image = pygame.transform.smoothscale(image, (size, size))
         if old_move_pos is not None:
             old_x, old_y = old_move_pos
             progress = (1.0 - self.moving_time / self.move_duration)
@@ -206,8 +207,8 @@ class MoveBoxesGame(GUI):
         off_x, off_y = (gf_off_x + (s_w - cell_size * c_w) / 2, gf_off_y + (s_h - cell_size * c_h) / 2)
         offset = off_x, off_y
 
-        cur_img_free = pygame.transform.scale(self.images['free_cell'], (cell_size, cell_size))
-        cur_img_wall = pygame.transform.scale(self.images['wall'], (cell_size, cell_size))
+        cur_img_free = pygame.transform.smoothscale(self.images['free_cell'], (cell_size, cell_size))
+        cur_img_wall = pygame.transform.smoothscale(self.images['wall'], (cell_size, cell_size))
         # render cells
         for x in range(c_w):
             for y in range(c_h):
@@ -218,22 +219,19 @@ class MoveBoxesGame(GUI):
                 screen.blit(cur_img, (off_x + x * cell_size, off_y + y * cell_size))
 
         # render objects
-        cur_img = pygame.transform.scale(self.images['box_cell'], (cell_size, cell_size))
+        cur_img = pygame.transform.smoothscale(self.images['box_cell'], (cell_size, cell_size))
         for x, y in self.current_level.places_for_boxes:
             screen.blit(cur_img, (off_x + x * cell_size, off_y + y * cell_size))
 
-        # moving objects should be a bit smaller than a whole cell?
-        moving_coeff = 0.9
-        delta_s = int((1.0 - moving_coeff) * cell_size)
-        cur_img = pygame.transform.scale(self.images['box'], (cell_size - delta_s, cell_size - delta_s))
+        cur_img = pygame.transform.smoothscale(self.images['box'], (cell_size, cell_size))
         for box in self.current_level.boxes:
             if self.is_moving and self.grabbed_box is not None and box is self.grabbed_box:
                 old_pos = self.moving_old_poses['box'] 
             else:
                 old_pos = None
-            self.render_sq_object(self.images['box'], cell_size - delta_s, offset, cell_size, box.get_pos(), old_pos)
+            self.render_sq_object(self.images['box'], cell_size, offset, cell_size, box.get_pos(), old_pos)
 
-        self.render_sq_object(self.images['player'], cell_size - delta_s, offset, cell_size,
+        self.render_sq_object(self.images['player'], cell_size, offset, cell_size,
                               self.current_level.player.get_pos(), 
                               self.moving_old_poses['player'] if self.is_moving else None)
 
@@ -243,7 +241,7 @@ class MoveBoxesGame(GUI):
                 pos = self.grabbed_box.get_pos()
             else:
                 pos = self.current_level.player.get_pos()
-            self.render_sq_object(self.images['grab'], cell_size - delta_s, offset, cell_size, pos,
+            self.render_sq_object(self.images['grab'], cell_size, offset, cell_size, pos,
                                   self.moving_old_poses['box'] if self.is_moving else None)
 
         # render menu elements (TODO)

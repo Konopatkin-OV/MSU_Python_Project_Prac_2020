@@ -5,8 +5,7 @@ class CustomLevel:
     min_width = 3
     min_height = 3
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
         self.width = self.min_width
         self.height = self.min_height
         self.field = [['w'] * self.width for i in range(self.height)]
@@ -63,46 +62,56 @@ class CustomLevel:
                 y < 0 or y >= self.height:
             return
 
-        self.field[x][y] = symbol
-
         if symbol == 'w':
-            if x == 1:
-                while self.width > self.min_width:
-                    if self._check_column(1):
-                        self._remove_column(1)
-                    else:
-                        break
-            elif x == self.width - 2:
-                while self.width > self.min_width:
-                    if self._check_column(-2):
-                        self._remove_column(-2)
-                    else:
-                        break
-            if y == 1:
-                while self.height > self.min_height:
-                    if self._check_row(1):
-                        self._remove_row(1)
-                    else:
-                        break
-            elif y == self.height - 2:
-                while self.height > self.min_height:
-                    if self._check_row(-2):
-                        self._remove_row(-2)
-                    else:
-                        break
-        else:
-            if x == 0:
-                self._add_left_column()
-            elif x == self.width - 1:
-                self._add_right_column()
-            if y == 0:
-                self._add_top_row()
-            elif y == self.height - 1:
-                self._add_bottom_row()
+            self._put_wall(x, y)
+        elif symbol == ' ':
+            self._put_free_cell(x, y)
+        elif self.field[x][y] == ' ':
+            self.field[x][y] = symbol
+
+    def _put_wall(self, x: int, y: int):
+        self.field[x][y] = 'w'
+
+        if x == 1:
+            while self.width > self.min_width:
+                if self._check_column(1):
+                    self._remove_column(1)
+                else:
+                    break
+        elif x == self.width - 2:
+            while self.width > self.min_width:
+                if self._check_column(-2):
+                    self._remove_column(-2)
+                else:
+                    break
+        if y == 1:
+            while self.height > self.min_height:
+                if self._check_row(1):
+                    self._remove_row(1)
+                else:
+                    break
+        elif y == self.height - 2:
+            while self.height > self.min_height:
+                if self._check_row(-2):
+                    self._remove_row(-2)
+                else:
+                    break
+
+    def _put_free_cell(self, x: int, y: int):
+        self.field[x][y] = ' '
+
+        if x == 0:
+            self._add_left_column()
+        elif x == self.width - 1:
+            self._add_right_column()
+        if y == 0:
+            self._add_top_row()
+        elif y == self.height - 1:
+            self._add_bottom_row()
 
     """Saves the level to a file."""
 
-    def save(self):
+    def save(self) -> str:
         order = 1
         while os.path.exists(f'levels/my level {order}.lvl'):
             order = order + 1
@@ -115,4 +124,4 @@ class CustomLevel:
                 file.write(symbol)
             file.write('\n')
         file.close()
-        self.app.GUIs['moveBoxesGame'].add_level(name)
+        return name
