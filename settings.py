@@ -127,12 +127,12 @@ button.BUTTON_SIZE[1] + 3), color = pygame.Color(70, 50, 70)), 'reset'))
                 if isinstance(self.move, str):
                     gui.keys[self.move] = e.key
                     if self.move == 'grab':
-                        gui.buttons[self.move].event = pygame.event.Event(e.key)                             
+                        gui.buttons[self.move].event.key = e.key #pygame.event.Event(e.key)
                 else:                
                     for key, value in gui.keys['move'].items():
                         if value == self.move:
                             gui.keys['move'].update({e.key: gui.keys['move'].pop(key)})
-                            gui.buttons[self.move].event = pygame.event.Event(e.key)
+                            gui.buttons[self.move].event.key = e.key #pygame.event.Event(e.key)
                             break
                 if e.unicode.isalpha():
                     self.pressed_button.name = e.unicode.upper()

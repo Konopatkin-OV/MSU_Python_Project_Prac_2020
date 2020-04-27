@@ -103,32 +103,37 @@ class MoveBoxesGame(GUI):
         w = screen.get_width() - 13*button_size[0]/4
         h = screen.get_height() - 6*button_size[1]
 
-        button_event = pygame.event.Event(pygame.locals.K_UP)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_UP
         b_up = button.Button('up', screen, button_event, (w,h), button_size, button_color, font_size)
         self.buttons[0] = b_up
 
         button_size_1 = 46, 30
         h += button_size[1] + button_size_1[1]/2
         w -= button_size_1[0]/2 - button_size[0]/2 
-        button_event = pygame.event.Event(pygame.locals.K_DOWN)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_DOWN
         b_down = button.Button('down', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[1] = b_down
 
         w -= 5*button_size[0]/3
         h = screen.get_height() - 5*button_size[1]
-        button_event = pygame.event.Event(pygame.locals.K_LEFT)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_LEFT
         b_left = button.Button('left', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[2] = b_left
 
         w += 10*button_size[0]/3
-        button_event = pygame.event.Event(pygame.locals.K_RIGHT)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_RIGHT
         b_right = button.Button('right', screen, button_event, (w,h), button_size_1, button_color, font_size)
         self.buttons[3] = b_right
         
         button_size_2 = 100, 30
         w = screen.get_width() - 13*button_size[0]/4 - (button_size_2[0]/2 - button_size[0]/2)
         h += 2*button_size[1]   
-        button_event = pygame.event.Event(pygame.locals.K_e)
+        button_event = pygame.event.Event(pygame.locals.KEYDOWN)
+        button_event.key = pygame.locals.K_e
         b_grab = button.Button('grab', screen, button_event, (w,h), button_size_2, button_color, font_size)
         self.buttons['grab'] = b_grab 
 
@@ -287,6 +292,7 @@ class MoveBoxesGame(GUI):
                 # get direction of moving
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
                 dx, dy = cur_dir
+        
                 x, y = self.current_level.player.get_pos()
                 c_w, c_h = self.current_level.width, self.current_level.height
                 g_x, g_y = x + dx, y + dy # goal cell

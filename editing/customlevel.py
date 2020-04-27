@@ -116,3 +116,7 @@ class CustomLevel:
             file.write('\n')
         file.close()
         self.app.GUIs['moveBoxesGame'].add_level(name)
+
+        number_list = list(map (lambda s: s.replace('ChooseLevel',''), list(filter(lambda s: s.startswith('ChooseLevel'), self.app.GUIs.keys()))))
+        max_number = max(list(map(int, number_list)))       
+        self.app.GUIs[f'ChooseLevel{max_number}'].add_level(name)
