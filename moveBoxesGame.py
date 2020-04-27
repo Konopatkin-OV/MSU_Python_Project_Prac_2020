@@ -46,6 +46,7 @@ class MoveBoxesGame(GUI):
 
         # game variables
         self.moves_made = 0
+        self.level_finished = False
         self.attempting_grabbing = False
         self.grabbed_box = None
 
@@ -152,6 +153,7 @@ class MoveBoxesGame(GUI):
         self.images[name] = image
 
     def process_frame(self, delta_t):
+        # process player moving animation time
         if self.is_moving:
             self.moving_time += delta_t
             if self.moving_time >= self.move_duration:
@@ -160,6 +162,7 @@ class MoveBoxesGame(GUI):
 
     def start_move(self, player_goal, box_goal=None):
         if not self.is_moving:
+            # launch smooth animation
             if self.move_duration > 0.0:
                 self.is_moving = True
                 self.moving_time = 0.0
@@ -172,12 +175,18 @@ class MoveBoxesGame(GUI):
                 self.grabbed_box.move(*box_goal)
             self.moves_made += 1
 
+    def check_level_finish(self):
+        if self.current_level.is_complete():
+            self.level_finished = True
+            print("SUCCESS!")
+
     # renders one square object, maybe moving
     # because copypasting is evil!
     def render_sq_object(self, image, size, offset, cell_size, pos, old_move_pos=None):
         x, y = pos
         image = pygame.transform.scale(image, (size, size))
         if old_move_pos is not None:
+            # if an object is moving then render in intermediate state
             old_x, old_y = old_move_pos
             progress = (1.0 - self.moving_time / self.move_duration)
             move_off_x = (old_x - x) * progress
@@ -266,7 +275,7 @@ class MoveBoxesGame(GUI):
                 return -1
             elif event.key == self.keys["reset"]:
                 self.reset()
-            elif event.key == self.keys["grab"]:
+            elif event.key == self.keys["grab"] and not self.level_finished:
                 if not self.is_moving:
                     if self.grabbed_box is not None:
                         self.grabbed_box = None
@@ -287,7 +296,7 @@ class MoveBoxesGame(GUI):
                 except LookupError:
 #                    print(f'Level {(int(self.current_level.name)-1)} is not valid.')
                     return '__main__'
-            elif event.key in self.keys["move"]:
+            elif event.key in self.keys["move"] and not self.level_finished:
                 # try moving, still no collision checking
                 # get direction of moving
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
@@ -322,9 +331,11 @@ class MoveBoxesGame(GUI):
                                 good_move = True
                     if good_move:
                         self.start_move((g_x, g_y), (bg_x, bg_y))
+                        self.check_level_finish()
                 else:
                     if self.current_level.is_empty(g_x, g_y):
                         self.start_move((g_x, g_y))
+                        self.check_level_finish()
         # press a button
         elif event.type == pygame.locals.MOUSEBUTTONDOWN:
             for k, b in self.buttons.items():
@@ -367,6 +378,7 @@ class MoveBoxesGame(GUI):
     def reset(self):
         self.current_level.reset()
         self.moves_made = 0
+        self.level_finished = False
         self.attempting_grabbing = False
         self.grabbed_box = None
 
