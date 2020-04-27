@@ -7,8 +7,10 @@ from level import Level
 import menu
 import label
 
+
 BUTTONS_NUM_PER_COL = 5
 COLUMNS = 3
+
 class ChooseLevel(GUI):
     def __init__(self, app, name, levels = [], num_added_buttons = 0):
         super().__init__(app, name)
@@ -116,7 +118,6 @@ class ChooseLevel(GUI):
              e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': f'ChooseLevel{i}', 'next': 1, 'lvls': self.levels, 'index': i})
              self.gui_B.append(button.Button('NEXT', screen, e, (w_next, h_next)))
              ChooseLevel(self.application, f'ChooseLevel{i}', self.levels, i)
- 
 
     """Button rendering."""
     def render(self):
