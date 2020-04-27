@@ -24,7 +24,7 @@ class Menu(GUI):
 
         h += 2* button.BUTTON_SIZE[1] 
         e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 
-                               'name': 'ChooseLevel'})
+                               'name': 'ChooseLevel0'})
         self.B.append(button.Button('LEVELS', screen, e, (w, h))) 
 
         h += 2* button.BUTTON_SIZE[1] 
@@ -43,7 +43,7 @@ class Menu(GUI):
         w2 = screen.get_width()/2 - label.LABEL_SIZE[0]/2
         self.label = (label.Label(screen, (w2,0), color = pygame.Color(70, 50, 70)))
 
-        choose_level.ChooseLevel(app, 'ChooseLevel')
+        choose_level.ChooseLevel(app, 'ChooseLevel0')
         settings.Settings(app, 'Settings')        
     
     """Button rendering."""
@@ -54,7 +54,6 @@ class Menu(GUI):
             b.render()
         self.label.render('MENU')
         pygame.display.update()
-              
 
     """Button event handler."""
     def process_event(self, e):
@@ -69,5 +68,5 @@ class Menu(GUI):
                 b.press()
                 return
         if e.type == pygame.USEREVENT:
-            return e.name    
+            return e.name
 
