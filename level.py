@@ -86,7 +86,7 @@ class Level:
 
     def is_complete(self) -> bool:
         return set(self.box_cells) == \
-               set(map(lambda box: box.position, self.boxes))
+               set(map(lambda box: box.get_pos(), self.boxes))
 
     """Returns a box from the given cell or None if there is no box."""
 

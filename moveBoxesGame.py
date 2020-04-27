@@ -14,18 +14,19 @@ class MoveBoxesGame(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
 
-        self.levels = {}
+        self.levels = []
 
         root, dirs, files = next(os.walk('levels/', topdown=True))
         for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
                 try:
-                    self.levels[name] = Level(name)
+                    self.levels.append(Level(name))
                 except IOError:
                     print(f'Level {name} is not valid.')
 
-        self.current_level = self.levels['0']
+        self.current_index = 1
+        self.current_level = self.levels[self.current_index]
         
         # images for game objects
         # default monochrome colors
@@ -232,7 +233,7 @@ class MoveBoxesGame(GUI):
             self.render_sq_object(self.images['box'], cell_size, offset, cell_size, box.get_pos(), old_pos)
 
         self.render_sq_object(self.images['player'], cell_size, offset, cell_size,
-                              self.current_level.player.get_pos(), 
+                              self.current_level.player.get_pos(),
                               self.moving_old_poses['player'] if self.is_moving else None)
 
         # magic grabbing circle on player trying to grab or on the grabbed box
@@ -259,7 +260,7 @@ class MoveBoxesGame(GUI):
             if event.key == pygame.locals.K_ESCAPE:
                 return -1
             elif event.key == self.keys["reset"]:
-                self.reset()
+                self.current_level.reset()
             elif event.key == self.keys["grab"]:
                 if not self.is_moving:
                     if self.grabbed_box is not None:
@@ -267,19 +268,19 @@ class MoveBoxesGame(GUI):
                     else:
                         self.attempting_grabbing = not self.attempting_grabbing
             elif event.key == self.keys["next_lvl"]:
-                if self.current_level.is_complete:
-                        try:
-                            self.current_level = self.levels[str(int(self.current_level.name)+1)]
-                        except LookupError:
-#                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
-                            return '__main__'
+                if self.current_level.is_complete():
+                    if self.current_index < len(self.levels) - 1:
+                        self.current_index = self.current_index + 1
+                        self.current_level = self.levels[self.current_index]
+                    else:
+                        return '__main__'
                 else:
                     print(f'Level {self.current_level.name} is not complete.')
             elif event.key == self.keys["prev_lvl"]:
-                try:
-                    self.current_level = self.levels[str(int(self.current_level.name)-1)]
-                except LookupError:
-#                    print(f'Level {(int(self.current_level.name)-1)} is not valid.')
+                if self.current_index > 0:
+                    self.current_index = self.current_index - 1
+                    self.current_level = self.levels[self.current_index]
+                else:
                     return '__main__'
             elif event.key in self.keys["move"]:
                 # try moving, still no collision checking
@@ -334,26 +335,26 @@ class MoveBoxesGame(GUI):
                 return event.name
             elif event.name == 'moveBoxesGame':
                 if event.lvl == 'next':
-                    if self.current_level.is_complete:
-                        try:
-                            self.current_level = self.levels[str(int(self.current_level.name)+1)]
-                        except LookupError:
-#                            print(f'Level {(int(self.current_level.name)+1)} is not valid.')
+                    if self.current_level.is_complete():
+                        if self.current_index < len(self.levels) - 1:
+                            self.current_index = self.current_index + 1
+                            self.current_level = self.levels[self.current_index]
+                        else:
                             return '__main__'
                     else:
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
                     self.reset()
                 elif event.lvl == 'previous':
-                    try:
-                        self.current_level = self.levels[str(int(self.current_level.name) - 1)]
-                    except LookupError:
-                        #                        print(f'Level {(int(self.current_level.name)-1)} is not valid.')
+                    if self.current_index > 0:
+                        self.current_index = self.current_index - 1
+                        self.current_level = self.levels[self.current_index]
+                    else:
                         return '__main__'
 
     def add_level(self, name: str):
         try:
-            self.levels[name] = Level(name)
+            self.levels.append(Level(name))
         except IOError:
             print(f'Level {name} is not valid.')
 
@@ -366,8 +367,9 @@ class MoveBoxesGame(GUI):
         self.is_moving = False
         self.moving_time = 0.0
 
-    def select_level(self, name):
-        self.current_level = self.levels[name]
+    def select_level(self, index: int):
+        self.current_index = index
+        self.current_level = self.levels[index]
 
 
 if __name__ == '__main__':

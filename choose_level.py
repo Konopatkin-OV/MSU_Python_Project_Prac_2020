@@ -19,9 +19,9 @@ class ChooseLevel(GUI):
         h = screen.get_height()/5
 
         # level buttons
-        for name in app.GUIs['moveBoxesGame'].levels.keys():
-            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame', 'lvl': name})
-            self.B.append(button.Button(f'LEVEL {name}', screen, e, (w, h)))
+        for index, level in enumerate(app.GUIs['moveBoxesGame'].levels):
+            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame', 'lvl': index})
+            self.B.append(button.Button(f'LEVEL {level.name}', screen, e, (w, h)))
             h += 2*button.BUTTON_SIZE[1]
 
         # button to menu
@@ -54,6 +54,5 @@ class ChooseLevel(GUI):
                 return
         if e.type == pygame.USEREVENT:
             if e.name == 'moveBoxesGame':
-                self.application.GUIs[e.name].current_level = self.application.GUIs[e.name].levels[e.lvl]
+                self.application.GUIs[e.name].select_level(e.lvl)
             return e.name
-
