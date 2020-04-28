@@ -6,7 +6,7 @@ from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import scale
 from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
-
+from textbox import TextBox, TEXTBOX_SIZE
 
 class LevelEditor(GUI):
     def __init__(self, app, name: str):
@@ -42,6 +42,10 @@ class LevelEditor(GUI):
         self.offset_x, self.offset_y = None, None
         self.calculate_cell_size()
 
+        self.level_name_box = TextBox(
+                                  self.application.screen, 
+                                  (self.application.screen.get_width()/2 - TEXTBOX_SIZE[0]/2, 10))
+
         self.buttons = [
             Button(
                 'MENU', self.application.screen,
@@ -51,8 +55,15 @@ class LevelEditor(GUI):
                 'SAVE',
                 self.application.screen,
                 Event(pygame.USEREVENT, {'app': self.application, 'name': 'save'}),
-                (self.application.screen.get_width() - BUTTON_SIZE[0], 0))
+                (self.application.screen.get_width() - BUTTON_SIZE[0], 0)),
+            Button(
+                'OK',
+                self.application.screen,
+                Event(pygame.USEREVENT, {'app': self.application, 'name': 'ok'}),
+                (self.level_name_box.rect_box.right + 10, self.level_name_box.rect.top),
+                button_size = (40, 30))
         ]
+       
 
     def clear(self):
         pass
@@ -111,10 +122,21 @@ class LevelEditor(GUI):
         # render buttons
         for button in self.buttons:
             button.render()
+        
+        # render textbox
+        self.level_name_box.render()
 
         pygame.display.update()
 
     def process_event(self, event: Event):
+        # entering level name
+        if self.level_name_box.start_writing:
+            self.level_name_box.process_event(event)
+
+        # press a button
+        for button in self.buttons:
+            button.process_event(event)
+    
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.dragged_picture is None:
@@ -130,12 +152,9 @@ class LevelEditor(GUI):
                             self.dragged_picture = DraggedPicture(
                                 still_picture.symbol, x, y, offset_x, offset_y)
                             return
-
-                    for button in self.buttons:
-                        if button.rect.collidepoint(event.pos):
-                            button.press()
-                            return
-
+ 
+            if self.level_name_box.rect.collidepoint(event.pos):
+                self.level_name_box.start()
         elif event.type == MOUSEMOTION:
             if self.dragged_picture is not None:
                 self.dragged_picture.move(*event.pos)
@@ -148,17 +167,18 @@ class LevelEditor(GUI):
                 self.custom_level.put(
                     self.dragged_picture.symbol, field_x, field_y)
                 self.calculate_cell_size()
-                self.dragged_picture = None
+                self.dragged_picture = None  
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
                 return event.name
             elif event.name == 'save':
+                # user didn't save the name
+                if self.level_name_box.str[-1] == '|':
+                    self.level_name_box.str = 'my level'
                 self.custom_level.save()
-                self.buttons[-1].color, self.buttons[-1].new_color = \
-                    self.buttons[-1].new_color, self.buttons[-1].color
-
-
+                self.level_name_box.str = 'my level'
+        
 class StillPicture:
     def __init__(self, symbol: str, x: int, y: int):
         self.symbol = symbol

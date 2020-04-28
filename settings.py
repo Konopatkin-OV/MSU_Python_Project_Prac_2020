@@ -5,18 +5,27 @@ import moveBoxesGame
 import menu
 import label
 
+FRAME_WIDTH = 3
+
 class Settings(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
+        screen = self.application.screen
      
+        # background 
+        bg_coord = screen.get_width()/2 - 2*button.BUTTON_SIZE[0], 2*label.LABEL_SIZE[1]
+        self.bg_rect = pygame.Rect(bg_coord, (4*button.BUTTON_SIZE[0], screen.get_height()-3*label.LABEL_SIZE[1]))
+        frame_coord = self.bg_rect.left + FRAME_WIDTH, self.bg_rect.top + FRAME_WIDTH
+        frame_size = 4*button.BUTTON_SIZE[0]-2*FRAME_WIDTH, screen.get_height()-3*label.LABEL_SIZE[1]-2*FRAME_WIDTH
+        self.frame_rect = pygame.Rect(frame_coord, frame_size)
+
+
         # buttons list 
         self.B = []
         # labels list
         self.L = []
         
         gui = self.application.GUIs['moveBoxesGame'] 
-        screen = self.application.screen
-        screen.fill((0,0,0))
        
         w1 = screen.get_width()/2 - 5*button.BUTTON_SIZE[0]/4 
         w = screen.get_width()/2 + button.BUTTON_SIZE[0]/4
@@ -90,6 +99,8 @@ button.BUTTON_SIZE[1] + 3), color = pygame.Color(70, 50, 70)), 'reset'))
     def render(self):
         screen = self.application.screen
         screen.fill((0,0,0))
+        screen.fill(pygame.Color(100, 80, 100), self.bg_rect)
+        screen.fill(pygame.Color(0, 0, 0), self.frame_rect)
         for b in self.B:
             b.render() 
         for l in self.L:
@@ -105,18 +116,14 @@ button.BUTTON_SIZE[1] + 3), color = pygame.Color(70, 50, 70)), 'reset'))
     """Button event handler."""
     def process_event(self, e):
         gui = self.application.GUIs['moveBoxesGame']
-        for b in self.B:
-            # indicates if button was pressed 
-            if e.type is pygame.MOUSEBUTTONDOWN and b.rect.collidepoint(e.pos):
-                b.color, b.new_color = b.new_color, b.color
-                b.render()
-                # remember pressed button
+
+        # press a button
+        for b in self.B: 
+            b.process_event(e)
+            if b.is_button_pressed:
                 self.pressed_button = b
                 return
-            # indicates if button was released
-            elif e.type is pygame.MOUSEBUTTONUP and b.rect.collidepoint(e.pos):
-                b.press()
-                return
+
         if e.type == pygame.USEREVENT:
             if e.name == 'moveBoxesGame':
                 self.move = e.move
@@ -127,12 +134,12 @@ button.BUTTON_SIZE[1] + 3), color = pygame.Color(70, 50, 70)), 'reset'))
                 if isinstance(self.move, str):
                     gui.keys[self.move] = e.key
                     if self.move == 'grab':
-                        gui.buttons[self.move].event.key = e.key #pygame.event.Event(e.key)
+                        gui.buttons[self.move].event.key = e.key 
                 else:                
                     for key, value in gui.keys['move'].items():
                         if value == self.move:
                             gui.keys['move'].update({e.key: gui.keys['move'].pop(key)})
-                            gui.buttons[self.move].event.key = e.key #pygame.event.Event(e.key)
+                            gui.buttons[self.move].event.key = e.key 
                             break
                 if e.unicode.isalpha():
                     self.pressed_button.name = e.unicode.upper()

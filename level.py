@@ -57,7 +57,7 @@ class Level:
     """Indicates that the level is complete."""
     def is_complete(self) -> bool:
         return set(self.places_for_boxes) == \
-               set(map(lambda box: box.get_pos(), self.boxes))
+               set(map(lambda box: box.position, self.boxes))
 
     """Returns a box from the given cell or None if there is no box."""
     def get_box(self, x: int, y: int) -> Optional[Box]:

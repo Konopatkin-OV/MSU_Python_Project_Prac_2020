@@ -107,7 +107,13 @@ class CustomLevel:
         while os.path.exists(f'levels/my level {order}.lvl'):
             order = order + 1
 
-        name = f'my level {order}'
+
+        level_name = self.app.GUIs["NewLevel"].level_name_box.str
+        # default name for level
+        if level_name == 'my level':
+            name = f'my level {order}'
+        else:
+            name = level_name
         file = open(f'levels/{name}.lvl', 'w')
         # for row in map(lambda symbol: ''.join(symbol), zip(*self.field)):
         for line in zip(*self.field):

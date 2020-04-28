@@ -1,7 +1,6 @@
 import pygame
 
 TEXT_COLOR = 200, 200, 200
-#LABEL_SIZE = 160, 50
 LABEL_SIZE = 200, 50
 
 class Label():
