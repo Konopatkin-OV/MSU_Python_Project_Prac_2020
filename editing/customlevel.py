@@ -1,25 +1,25 @@
 import os
+from level import Level
 
 
 class CustomLevel:
     min_width = 3
     min_height = 3
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
         self.width = self.min_width
         self.height = self.min_height
-        self.field = [['w'] * self.width for i in range(self.height)]
+        self.field = [[''] * self.height for i in range(self.width)]
 
     def _add_left_column(self):
-        self.field.insert(0, ['w'] * self.height)
+        self.field.insert(0, [''] * self.height)
         self.width = self.width + 1
 
         if self._check_column(-2):
             self._remove_column(-2)
 
     def _add_right_column(self):
-        self.field.append(['w'] * self.height)
+        self.field.append([''] * self.height)
         self.width = self.width + 1
 
         if self._check_column(1):
@@ -27,7 +27,7 @@ class CustomLevel:
 
     def _add_top_row(self):
         for column in self.field:
-            column.insert(0, 'w')
+            column.insert(0, '')
         self.height = self.height + 1
 
         if self._check_row(-2):
@@ -35,17 +35,17 @@ class CustomLevel:
 
     def _add_bottom_row(self):
         for column in self.field:
-            column.append('w')
+            column.append('')
         self.height = self.height + 1
 
         if self._check_row(1):
             self._remove_row(1)
 
     def _check_column(self, index: int) -> bool:
-        return all(item == 'w' for item in self.field[index])
+        return all(not item for item in self.field[index])
 
     def _check_row(self, index: int) -> bool:
-        return all(column[index] == 'w' for column in self.field)
+        return all(not column[index] for column in self.field)
 
     def _remove_column(self, index: int):
         self.field.pop(index)
@@ -56,73 +56,93 @@ class CustomLevel:
             column.pop(index)
         self.height = self.height - 1
 
+    def _add_extra_walls(self):
+        if not self._check_column(0):
+            self._add_left_column()
+        if not self._check_column(-1):
+            self._add_right_column()
+        if not self._check_row(0):
+            self._add_top_row()
+        if not self._check_row(-1):
+            self._add_bottom_row()
+
+    def _remove_extra_walls(self):
+        while self.width > self.min_width:
+            if self._check_column(1):
+                self._remove_column(1)
+            else:
+                break
+        while self.width > self.min_width:
+            if self._check_column(-2):
+                self._remove_column(-2)
+            else:
+                break
+        while self.height > self.min_height:
+            if self._check_row(1):
+                self._remove_row(1)
+            else:
+                break
+        while self.height > self.min_height:
+            if self._check_row(-2):
+                self._remove_row(-2)
+            else:
+                break
+
     """Puts something on the field."""
 
     def put(self, symbol: str, x: int, y: int):
-        if x < 0 or x >= self.width or \
-                y < 0 or y >= self.height:
-            return
+        if 0 <= x < self.width and 0 <= y < self.height and \
+                (symbol == ' ' and self.field[x][y] == '' or
+                 symbol == 'x' and self.field[x][y] == ' ' or
+                 symbol in 'pb' and self.field[x][y] in (' ', ' x')):
+            self.field[x][y] = self.field[x][y] + symbol
+            self._add_extra_walls()
+        self._remove_extra_walls()
 
-        self.field[x][y] = symbol
+    """Removes something from the field."""
 
-        if symbol == 'w':
-            if x == 1:
-                while self.width > self.min_width:
-                    if self._check_column(1):
-                        self._remove_column(1)
-                    else:
-                        break
-            elif x == self.width - 2:
-                while self.width > self.min_width:
-                    if self._check_column(-2):
-                        self._remove_column(-2)
-                    else:
-                        break
-            if y == 1:
-                while self.height > self.min_height:
-                    if self._check_row(1):
-                        self._remove_row(1)
-                    else:
-                        break
-            elif y == self.height - 2:
-                while self.height > self.min_height:
-                    if self._check_row(-2):
-                        self._remove_row(-2)
-                    else:
-                        break
+    def remove(self, x: int, y: int) -> str:
+        if 0 <= x < self.width and 0 <= y < self.height and \
+                self.field[x][y]:
+            symbol = self.field[x][y][-1]
+            self.field[x][y] = self.field[x][y][:-1]
+            return symbol
         else:
-            if x == 0:
-                self._add_left_column()
-            elif x == self.width - 1:
-                self._add_right_column()
-            if y == 0:
-                self._add_top_row()
-            elif y == self.height - 1:
-                self._add_bottom_row()
+            return ''
 
     """Saves the level to a file."""
 
-    def save(self):
+    def save(self, level_name) -> str:
+        field = []
+        for column in self.field:
+            actual_column = []
+            for cell in column:
+                if not cell:
+                    actual_column.append('w')
+                elif cell == ' ':
+                    actual_column.append(cell)
+                elif cell in (' x', ' p', ' b'):
+                    actual_column.append(cell[-1])
+                elif cell == ' xp':
+                    actual_column.append('P')
+                elif cell == ' xb':
+                    actual_column.append('B')
+            field.append(actual_column)
+        Level.check_for_validity(field)
+
         order = 1
         while os.path.exists(f'levels/my level {order}.lvl'):
             order = order + 1
 
-
-        level_name = self.app.GUIs["NewLevel"].level_name_box.str
         # default name for level
         if level_name == 'my level':
             name = f'my level {order}'
         else:
             name = level_name
         file = open(f'levels/{name}.lvl', 'w')
-        # for row in map(lambda symbol: ''.join(symbol), zip(*self.field)):
-        for line in zip(*self.field):
+        for line in zip(*field):
             for symbol in line:
                 file.write(symbol)
             file.write('\n')
         file.close()
-        self.app.GUIs['moveBoxesGame'].add_level(name)
-
-        number_list = list(map (lambda s: s.replace('ChooseLevel',''), list(filter(lambda s: s.startswith('ChooseLevel'), self.app.GUIs.keys()))))
-        max_number = max(list(map(int, number_list)))       
-        self.app.GUIs[f'ChooseLevel{max_number}'].add_level(name)
+        return name

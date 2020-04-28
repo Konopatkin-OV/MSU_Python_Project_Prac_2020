@@ -1,45 +1,42 @@
 from gui import GUI
 import pygame
 from pygame.event import Event
-from pygame import Surface, Rect
+from pygame import Surface, Rect, SRCALPHA
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
-from pygame.transform import scale
+from pygame.transform import smoothscale
 from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
 from textbox import TextBox, TEXTBOX_SIZE
+from image import WALL_IMAGE, FREE_CELL_IMAGE, \
+    BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
+
 
 class LevelEditor(GUI):
     def __init__(self, app, name: str):
         super().__init__(app, name)
-        self.custom_level = CustomLevel(app)
+        self.custom_level = CustomLevel()
 
-        self.images = {'background': Surface(self.application.screen.get_size()),
-                       'free_cell': Surface((64, 64)),
-                       'wall': Surface((64, 64)),
-                       'box_cell': Surface((64, 64)),
-                       'player': Surface((64, 64)),
-                       'box': Surface((64, 64))}
+        self.images = {'free_cell': Surface((128, 128), SRCALPHA),
+                       'wall': Surface((128, 128), SRCALPHA),
+                       'box_cell': Surface((128, 128), SRCALPHA),
+                       'player': Surface((128, 128), SRCALPHA),
+                       'box': Surface((128, 128), SRCALPHA)}
 
-        self.images['background'].fill((0, 0, 0))
-        self.images['free_cell'].fill((150, 150, 150))
-        self.images['wall'].fill((200, 100, 100))
-        self.images['box_cell'].fill((100, 100, 200))
-
-        rect = Rect(3, 3, 58, 58)
-        self.images['player'].fill((150, 150, 150))
-        self.images['player'].fill((50, 150, 50), rect)
-        self.images['box'].fill((150, 150, 150))
-        self.images['box'].fill((100, 50, 0), rect)
+        self.images['free_cell'].blit(FREE_CELL_IMAGE, (0, 0))
+        self.images['wall'].blit(WALL_IMAGE, (0, 0))
+        self.images['box_cell'].blit(BOX_CELL_IMAGE, (0, 0))
+        self.images['player'].blit(PLAYER_IMAGE, (0, 0))
+        self.images['box'].blit(BOX_IMAGE, (0, 0))
 
         self.dragged_picture = None
-        self.still_pictures = [StillPicture(' ', -2, -1),
-                               StillPicture('w', -2, 0),
-                               StillPicture('b', -2, 1),
-                               StillPicture('p', -2, 2),
-                               StillPicture('x', -2, 3)]
+        self.still_pictures = [StillPicture(' '),
+                               StillPicture('b'),
+                               StillPicture('p'),
+                               StillPicture('x')]
 
         self.cell_size = None
         self.offset_x, self.offset_y = None, None
+        self.symbols_to_images = {}
         self.calculate_cell_size()
 
         self.level_name_box = TextBox(
@@ -49,8 +46,8 @@ class LevelEditor(GUI):
         self.buttons = [
             Button(
                 'MENU', self.application.screen,
-                Event(pygame.USEREVENT, {'app': self.application, 'name': '__main__'}),
-                (0, 0)),
+                Event(pygame.USEREVENT,
+                      {'app': self.application, 'name': '__main__'}), (0, 0)),
             Button(
                 'SAVE',
                 self.application.screen,
@@ -63,10 +60,11 @@ class LevelEditor(GUI):
                 (self.level_name_box.rect_box.right + 10, self.level_name_box.rect.top),
                 button_size = (40, 30))
         ]
-       
 
     def clear(self):
-        pass
+        self.custom_level = CustomLevel()
+        self.dragged_picture = None
+        self.calculate_cell_size()
 
     def calculate_cell_size(self):
         reduction_x, reduction_y = 200, 20
@@ -76,47 +74,55 @@ class LevelEditor(GUI):
 
         # compute cell size and offset to render the field fully in the center of screen
         width, height = self.custom_level.width, self.custom_level.height
-        height_for_pictures = len(self.still_pictures) + (height + 1) % 2
-        self.cell_size = int(min(screen_width / (width + 4), screen_height / max(height, height_for_pictures)))
-        self.offset_x = int(reduction_x + (screen_width - self.cell_size * width) / 2)
-        self.offset_y = int(reduction_y + (screen_height - self.cell_size * height) / 2)
+        space = 0.25
+        height_for_pictures = len(self.still_pictures) * (1 + space) - space
+        self.cell_size = int(
+            min(screen_width / (width + 4),
+                screen_height / max(height, height_for_pictures)))
+        self.offset_x = int(
+            reduction_x + (screen_width - self.cell_size * width) / 2)
+        self.offset_y = int(
+            reduction_y + (screen_height - self.cell_size * height) / 2)
 
         for i, still_picture in enumerate(self.still_pictures):
-            still_picture.y = i + \
-                int((self.custom_level.height - len(self.still_pictures)) // 2)
+            still_picture.move(
+                self.offset_x - 2 * self.cell_size,
+                self.offset_y + ((height - height_for_pictures) / 2 +
+                                 (1 + space) * i) * self.cell_size,
+                self.cell_size)
+
+        size = (self.cell_size, self.cell_size)
+        self.symbols_to_images = {' ': smoothscale(self.images['free_cell'], size),
+                                  'w': smoothscale(self.images['wall'], size),
+                                  'p': smoothscale(self.images['player'], size),
+                                  'b': smoothscale(self.images['box'], size),
+                                  'x': smoothscale(self.images['box_cell'], size)}
 
     def render(self):
         screen = self.application.screen
         screen.fill((0, 0, 0))
 
-        path_image = scale(self.images['free_cell'], (self.cell_size, self.cell_size))
-        wall_image = scale(self.images['wall'], (self.cell_size, self.cell_size))
-        box_cell_image = scale(self.images['box_cell'], (self.cell_size, self.cell_size))
-        player_image = scale(self.images['player'], (self.cell_size, self.cell_size))
-        box_image = scale(self.images['box'], (self.cell_size, self.cell_size))
-
-        symbols_to_images = {' ': path_image,
-                             'w': wall_image,
-                             'p': player_image,
-                             'b': box_image,
-                             'x': box_cell_image}
         # render cells
         for x in range(self.custom_level.width):
             for y in range(self.custom_level.height):
-                symbol = self.custom_level.field[x][y]
-                screen.blit(symbols_to_images[symbol],
-                            (self.offset_x + x * self.cell_size,
-                             self.offset_y + y * self.cell_size))
+                cell = self.custom_level.field[x][y]
+                for symbol in cell:
+                    screen.blit(self.symbols_to_images[symbol],
+                                (self.offset_x + x * self.cell_size,
+                                 self.offset_y + y * self.cell_size))
+                if not cell:
+                    screen.blit(self.symbols_to_images['w'],
+                                (self.offset_x + x * self.cell_size,
+                                 self.offset_y + y * self.cell_size))
 
         # render still pictures
         for still_picture in self.still_pictures:
-            screen.blit(symbols_to_images[still_picture.symbol],
-                        (self.offset_x + still_picture.x * self.cell_size,
-                         self.offset_y + still_picture.y * self.cell_size))
+            screen.blit(self.symbols_to_images[still_picture.symbol],
+                        (still_picture.rect.x, still_picture.rect.y))
 
         # render a moving picture
         if self.dragged_picture is not None:
-            screen.blit(symbols_to_images[self.dragged_picture.symbol],
+            screen.blit(self.symbols_to_images[self.dragged_picture.symbol],
                         (self.dragged_picture.x, self.dragged_picture.y))
 
         # render buttons
@@ -139,22 +145,38 @@ class LevelEditor(GUI):
     
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
+                if self.level_name_box.rect.collidepoint(event.pos):
+                    self.level_name_box.start()
+                    return
+
                 if self.dragged_picture is None:
-                    screen_x, screen_y = event.pos
-                    field_x = int((screen_x - self.offset_x) // self.cell_size)
-                    field_y = int((screen_y - self.offset_y) // self.cell_size)
-                    for still_picture in self.still_pictures:
-                        if still_picture.x == field_x and still_picture.y == field_y:
-                            x = still_picture.x * self.cell_size + self.offset_x
-                            y = still_picture.y * self.cell_size + self.offset_y
-                            offset_x = screen_x - x
-                            offset_y = screen_y - y
-                            self.dragged_picture = DraggedPicture(
-                                still_picture.symbol, x, y, offset_x, offset_y)
+                    x, y = event.pos
+                    for button in self.buttons:
+                        if button.rect.collidepoint(event.pos):
+                            button.press()
                             return
- 
-            if self.level_name_box.rect.collidepoint(event.pos):
-                self.level_name_box.start()
+
+                    for still_picture in self.still_pictures:
+                        if still_picture.rect.collidepoint(*event.pos):
+                            offset_x = x - still_picture.rect.x
+                            offset_y = y - still_picture.rect.y
+                            self.dragged_picture = DraggedPicture(
+                                still_picture.symbol,
+                                *still_picture.rect.topleft,
+                                offset_x, offset_y)
+                            return
+
+                    field_x = int((x - self.offset_x) // self.cell_size)
+                    field_y = int((y - self.offset_y) // self.cell_size)
+                    symbol = self.custom_level.remove(field_x, field_y)
+                    if symbol:
+                        actual_x = field_x * self.cell_size + self.offset_x
+                        actual_y = field_y * self.cell_size + self.offset_y
+                        offset_x = x - actual_x
+                        offset_y = y - actual_y
+                        self.dragged_picture = DraggedPicture(
+                            symbol, actual_x, actual_y, offset_x, offset_y)
+
         elif event.type == MOUSEMOTION:
             if self.dragged_picture is not None:
                 self.dragged_picture.move(*event.pos)
@@ -176,18 +198,36 @@ class LevelEditor(GUI):
                 # user didn't save the name
                 if self.level_name_box.str[-1] == '|':
                     self.level_name_box.str = 'my level'
-                self.custom_level.save()
-                self.level_name_box.str = 'my level'
-        
+                try:
+                    level_name = self.application.GUIs["NewLevel"].level_name_box.str
+                    name = self.custom_level.save(level_name)
+                    # self.application.GUIs['moveBoxesGame'].add_level(name)
+                    number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
+                                           list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))
+                    max_number = max(list(map(int, number_list)))
+                    self.application.GUIs[f'ChooseLevel{max_number}'].add_level(name)
+                    self.clear()
+                    self.level_name_box.str = 'my level'
+                except IOError:
+                    print('The level is not completed!')
+                self.buttons[-1].color, self.buttons[-1].new_color = \
+                    self.buttons[-1].new_color, self.buttons[-1].color
+
+
 class StillPicture:
-    def __init__(self, symbol: str, x: int, y: int):
+    def __init__(self, symbol: str):
         self.symbol = symbol
-        self.x = x
-        self.y = y
+        self.rect = Rect(0, 0, 0, 0)
+
+    def move(self, x: int, y: int, cell_size: int):
+        self.rect.width = cell_size
+        self.rect.height = cell_size
+        self.rect.topleft = x, y
 
 
 class DraggedPicture:
-    def __init__(self, symbol: str, x: int, y: int, offset_x: int, offset_y: int):
+    def __init__(self, symbol, x, y,
+                 offset_x: int, offset_y: int):
         self.symbol = symbol
         self.x = x
         self.y = y
@@ -197,10 +237,3 @@ class DraggedPicture:
     def move(self, x, y):
         self.x = x - self.offset_x
         self.y = y - self.offset_y
-
-
-if __name__ == '__main__':
-    from BaseApp import Application
-    app = Application()
-    gui = LevelEditor(app, '__main__')
-    app.start()
