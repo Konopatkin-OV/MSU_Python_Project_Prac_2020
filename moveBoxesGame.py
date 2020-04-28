@@ -99,9 +99,9 @@ class MoveBoxesGame(GUI):
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'previous'})
         self.buttons['prev_lvl'] = button.Button('PREVIOUS', screen, button_event, (w, 0))
 
-        # control buttons        
-        button_size = 35, 35
-        button_color = pygame.Color(50, 50, 50)  # (70, 70, 70)
+        # control buttons
+        button_size = 35,35
+        button_color = pygame.Color(50, 50, 50)
         font_size = 15
 
         w = screen.get_width() - 13 * button_size[0] / 4
@@ -156,7 +156,6 @@ class MoveBoxesGame(GUI):
         self.images[name] = image
 
     def process_frame(self, delta_t):
-        # process player moving animation time
         if self.is_moving:
             self.moving_time += delta_t
             if self.moving_time >= self.move_duration:
@@ -165,7 +164,6 @@ class MoveBoxesGame(GUI):
 
     def start_move(self, player_goal, box_goal=None):
         if not self.is_moving:
-            # launch smooth animation
             if self.move_duration > 0.0:
                 self.is_moving = True
                 self.moving_time = 0.0
@@ -178,18 +176,12 @@ class MoveBoxesGame(GUI):
                 self.grabbed_box.move(*box_goal)
             self.moves_made += 1
 
-    def check_level_finish(self):
-        if self.current_level.is_complete():
-            self.level_finished = True
-            print("SUCCESS!")
-
     # renders one square object, maybe moving
     # because copypasting is evil!
     def render_sq_object(self, image, size, offset, cell_size, pos, old_move_pos=None):
         x, y = pos
         image = pygame.transform.smoothscale(image, (size, size))
         if old_move_pos is not None:
-            # if an object is moving then render in intermediate state
             old_x, old_y = old_move_pos
             progress = (1.0 - self.moving_time / self.move_duration)
             move_off_x = (old_x - x) * progress
@@ -201,6 +193,11 @@ class MoveBoxesGame(GUI):
             self.application.screen.blit(image,
                                          (int(offset[0] + (x + 0.5) * cell_size - size / 2),
                                           int(offset[1] + (y + 0.5) * cell_size - size / 2)))
+
+    def check_level_finish(self):
+        if self.current_level.is_complete():
+            self.level_finished = True
+            print("SUCCESS!")
 
     def render(self):
         screen = self.application.screen
@@ -264,18 +261,26 @@ class MoveBoxesGame(GUI):
             b.render()
 
         # render labels
-        self.labels[0].render(f'Level {self.current_level.name}', True)
+        if self.current_level.name.isdigit() and len(self.current_level.name) < 4:
+            level_name = f'LEVEL {self.current_level.name}'
+        else:
+            level_name = self.current_level.name
+        self.labels[0].render(level_name, True)
         self.labels[1].render(f'Moves: {self.moves_made}', True)
 
         pygame.display.update()
 
     def process_event(self, event):
+        # press a button
+        for k, b in self.buttons.items():
+            b.process_event(event)
+
         if event.type == pygame.locals.KEYDOWN:
             if event.key == pygame.locals.K_ESCAPE:
                 return -1
             elif event.key == self.keys["reset"]:
                 self.reset()
-            elif event.key == self.keys["grab"] and not self.level_finished:
+            elif event.key == self.keys["grab"]:
                 if not self.is_moving:
                     if self.grabbed_box is not None:
                         self.grabbed_box = None
@@ -285,8 +290,7 @@ class MoveBoxesGame(GUI):
                 if self.level_finished:
                     self.reset()
                     if self.current_index < len(self.levels) - 1:
-                        self.current_index = self.current_index + 1
-                        self.current_level = self.levels[self.current_index]
+                        self.select_level(self.current_index + 1)
                     else:
                         return '__main__'
                 else:
@@ -294,11 +298,10 @@ class MoveBoxesGame(GUI):
             elif event.key == self.keys["prev_lvl"]:
                 self.reset()
                 if self.current_index > 0:
-                    self.current_index = self.current_index - 1
-                    self.current_level = self.levels[self.current_index]
+                    self.select_level(self.current_index - 1)
                 else:
                     return '__main__'
-            elif event.key in self.keys["move"] and not self.level_finished:
+            elif event.key in self.keys["move"]:
                 # try moving, still no collision checking
                 # get direction of moving
                 cur_dir = self.move_dirs[self.keys["move"][event.key]]
@@ -338,17 +341,7 @@ class MoveBoxesGame(GUI):
                     if self.current_level.is_empty(g_x, g_y):
                         self.start_move((g_x, g_y))
                         self.check_level_finish()
-        # press a button
-        elif event.type == pygame.locals.MOUSEBUTTONDOWN:
-            for k, b in self.buttons.items():
-                if b.rect.collidepoint(event.pos):
-                    b.color, b.new_color = b.new_color, b.color
-                    b.render()
-        # release a button
-        elif event.type == pygame.locals.MOUSEBUTTONUP:
-            for k, b in self.buttons.items():
-                if b.rect.collidepoint(event.pos):
-                    b.press()
+
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
                 return event.name
@@ -357,8 +350,7 @@ class MoveBoxesGame(GUI):
                     if self.level_finished:
                         self.reset()
                         if self.current_index < len(self.levels) - 1:
-                            self.current_index = self.current_index + 1
-                            self.current_level = self.levels[self.current_index]
+                            self.select_level(self.current_index + 1)
                         else:
                             return '__main__'
                     else:
@@ -368,8 +360,7 @@ class MoveBoxesGame(GUI):
                 elif event.lvl == 'previous':
                     self.reset()
                     if self.current_index > 0:
-                        self.current_index = self.current_index - 1
-                        self.current_level = self.levels[self.current_index]
+                        self.select_level(self.current_index - 1)
                     else:
                         return '__main__'
 

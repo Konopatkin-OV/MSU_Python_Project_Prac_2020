@@ -6,6 +6,7 @@ from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import smoothscale
 from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
+from textbox import TextBox, TEXTBOX_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
@@ -38,16 +39,27 @@ class LevelEditor(GUI):
         self.symbols_to_images = {}
         self.calculate_cell_size()
 
+        self.level_name_box = TextBox(
+                                  self.application.screen, 
+                                  (self.application.screen.get_width()/2 - TEXTBOX_SIZE[0]/2, 10))
+
         self.buttons = [
             Button(
                 'MENU', self.application.screen,
                 Event(pygame.USEREVENT,
                       {'app': self.application, 'name': '__main__'}), (0, 0)),
             Button(
-                'SAVE', self.application.screen,
-                Event(pygame.USEREVENT,
-                      {'app': self.application, 'name': 'save'}),
-                (self.application.screen.get_width() - BUTTON_SIZE[0], 0))]
+                'SAVE',
+                self.application.screen,
+                Event(pygame.USEREVENT, {'app': self.application, 'name': 'save'}),
+                (self.application.screen.get_width() - BUTTON_SIZE[0], 0)),
+            Button(
+                'OK',
+                self.application.screen,
+                Event(pygame.USEREVENT, {'app': self.application, 'name': 'ok'}),
+                (self.level_name_box.rect_box.right + 10, self.level_name_box.rect.top),
+                button_size = (40, 30))
+        ]
 
     def clear(self):
         self.custom_level = CustomLevel()
@@ -116,12 +128,27 @@ class LevelEditor(GUI):
         # render buttons
         for button in self.buttons:
             button.render()
+        
+        # render textbox
+        self.level_name_box.render()
 
         pygame.display.update()
 
     def process_event(self, event: Event):
+        # entering level name
+        if self.level_name_box.start_writing:
+            self.level_name_box.process_event(event)
+
+        # press a button
+        for button in self.buttons:
+            button.process_event(event)
+    
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
+                if self.level_name_box.rect.collidepoint(event.pos):
+                    self.level_name_box.start()
+                    return
+
                 if self.dragged_picture is None:
                     x, y = event.pos
                     for button in self.buttons:
@@ -162,20 +189,25 @@ class LevelEditor(GUI):
                 self.custom_level.put(
                     self.dragged_picture.symbol, field_x, field_y)
                 self.calculate_cell_size()
-                self.dragged_picture = None
+                self.dragged_picture = None  
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
                 return event.name
             elif event.name == 'save':
+                # user didn't save the name
+                if self.level_name_box.str[-1] == '|':
+                    self.level_name_box.str = 'my level'
                 try:
-                    name = self.custom_level.save()
+                    level_name = self.application.GUIs["NewLevel"].level_name_box.str
+                    name = self.custom_level.save(level_name)
                     # self.application.GUIs['moveBoxesGame'].add_level(name)
                     number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
                                            list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))
                     max_number = max(list(map(int, number_list)))
                     self.application.GUIs[f'ChooseLevel{max_number}'].add_level(name)
                     self.clear()
+                    self.level_name_box.str = 'my level'
                 except IOError:
                     print('The level is not completed!')
                 self.buttons[-1].color, self.buttons[-1].new_color = \

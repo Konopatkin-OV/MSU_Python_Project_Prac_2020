@@ -6,14 +6,24 @@ import moveBoxesGame
 import settings
 import label
 
+FRAME_WIDTH = 3
+
 
 class Menu(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
+        screen = self.application.screen
+
+        # background 
+        bg_coord = screen.get_width() / 2 - button.BUTTON_SIZE[0], 2 * label.LABEL_SIZE[1]
+        self.bg_rect = pygame.Rect(bg_coord, (2 * button.BUTTON_SIZE[0], screen.get_height() - 4 * label.LABEL_SIZE[1]))
+        frame_coord = self.bg_rect.left + FRAME_WIDTH, self.bg_rect.top + FRAME_WIDTH
+        frame_size = 2 * button.BUTTON_SIZE[0] - 2 * FRAME_WIDTH, screen.get_height() - 4 * label.LABEL_SIZE[
+            1] - 2 * FRAME_WIDTH
+        self.frame_rect = pygame.Rect(frame_coord, frame_size)
 
         # button list for menu
         self.B = []
-        screen = self.application.screen
         w = screen.get_width() / 2 - button.BUTTON_SIZE[0] / 2
         button_num = 5
         num_buttons_per_screen = screen.get_height() / 2 / button.BUTTON_SIZE[1]
@@ -51,6 +61,9 @@ class Menu(GUI):
     def render(self):
         screen = self.application.screen
         screen.fill((0, 0, 0))
+
+        screen.fill(pygame.Color(100, 80, 100), self.bg_rect)
+        screen.fill(pygame.Color(0, 0, 0), self.frame_rect)
         for b in self.B:
             b.render()
         self.label.render('MENU')
@@ -59,15 +72,9 @@ class Menu(GUI):
     """Button event handler."""
 
     def process_event(self, e):
+        # press a button
         for b in self.B:
-            # indicates if button was pressed, pressing animation 
-            if e.type is pygame.MOUSEBUTTONDOWN and b.rect.collidepoint(e.pos):
-                b.color, b.new_color = b.new_color, b.color
-                b.render()
-                return
-            # indicates if button was released
-            elif e.type is pygame.MOUSEBUTTONUP and b.rect.collidepoint(e.pos):
-                b.press()
-                return
+            b.process_event(e)
+
         if e.type == pygame.USEREVENT:
             return e.name

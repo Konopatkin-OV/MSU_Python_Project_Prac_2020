@@ -26,6 +26,8 @@ class Button:
         self.new_color = color
         self.color = color.r + 62, color.g + 62, color.b + 62, color.a
 
+        self.is_button_pressed = 0
+
     """Render a button."""
 
     def render(self):
@@ -43,3 +45,19 @@ class Button:
         self.color, self.new_color = self.new_color, self.color
         self.render()
         pygame.event.post(self.event)
+ 
+    """Button event handler."""
+    def process_event(self, e, *pressed):
+        # indicates if button was pressed, pressing animation 
+        if e.type is pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(e.pos):       
+            self.color, self.new_color = self.new_color, self.color
+            self.render()
+            self.is_button_pressed = 1
+#            return True
+            return
+
+        # indicates if button was released
+        elif e.type is pygame.MOUSEBUTTONUP and self.is_button_pressed: #self.rect.collidepoint(e.pos):
+            self.press()
+            self.is_button_pressed = 0
+            return 
