@@ -170,7 +170,7 @@ class LevelEditor(GUI):
             elif event.name == 'save':
                 try:
                     name = self.custom_level.save()
-                    self.application.GUIs['moveBoxesGame'].add_level(name)
+                    # self.application.GUIs['moveBoxesGame'].add_level(name)
                     number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
                                            list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))
                     max_number = max(list(map(int, number_list)))
