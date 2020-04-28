@@ -29,7 +29,6 @@ class LevelEditor(GUI):
 
         self.dragged_picture = None
         self.still_pictures = [StillPicture(' '),
-                               StillPicture('w'),
                                StillPicture('b'),
                                StillPicture('p'),
                                StillPicture('x')]
