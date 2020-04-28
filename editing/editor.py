@@ -84,9 +84,7 @@ class LevelEditor(GUI):
         self.symbols_to_images = {' ': smoothscale(self.images['free_cell'], size),
                                   'w': smoothscale(self.images['wall'], size),
                                   'p': smoothscale(self.images['player'], size),
-                                  'P': smoothscale(self.images['player'], size),
                                   'b': smoothscale(self.images['box'], size),
-                                  'B': smoothscale(self.images['box'], size),
                                   'x': smoothscale(self.images['box_cell'], size)}
 
     def render(self):
@@ -96,18 +94,15 @@ class LevelEditor(GUI):
         # render cells
         for x in range(self.custom_level.width):
             for y in range(self.custom_level.height):
-                symbol = self.custom_level.field[x][y]
-                if symbol in 'xpPbB':
-                    screen.blit(self.symbols_to_images[' '],
+                cell = self.custom_level.field[x][y]
+                for symbol in cell:
+                    screen.blit(self.symbols_to_images[symbol],
                                 (self.offset_x + x * self.cell_size,
                                  self.offset_y + y * self.cell_size))
-                if symbol in 'PB':
-                    screen.blit(self.symbols_to_images['x'],
+                if not cell:
+                    screen.blit(self.symbols_to_images['w'],
                                 (self.offset_x + x * self.cell_size,
                                  self.offset_y + y * self.cell_size))
-                screen.blit(self.symbols_to_images[symbol],
-                            (self.offset_x + x * self.cell_size,
-                             self.offset_y + y * self.cell_size))
 
         # render still pictures
         for still_picture in self.still_pictures:
@@ -130,18 +125,31 @@ class LevelEditor(GUI):
             if event.button == 1:
                 if self.dragged_picture is None:
                     x, y = event.pos
+                    for button in self.buttons:
+                        if button.rect.collidepoint(event.pos):
+                            button.press()
+                            return
+
                     for still_picture in self.still_pictures:
                         if still_picture.rect.collidepoint(*event.pos):
                             offset_x = x - still_picture.rect.x
                             offset_y = y - still_picture.rect.y
                             self.dragged_picture = DraggedPicture(
-                                still_picture, offset_x, offset_y)
+                                still_picture.symbol,
+                                *still_picture.rect.topleft,
+                                offset_x, offset_y)
                             return
 
-                    for button in self.buttons:
-                        if button.rect.collidepoint(event.pos):
-                            button.press()
-                            return
+                    field_x = int((x - self.offset_x) // self.cell_size)
+                    field_y = int((y - self.offset_y) // self.cell_size)
+                    symbol = self.custom_level.remove(field_x, field_y)
+                    if symbol:
+                        actual_x = field_x * self.cell_size + self.offset_x
+                        actual_y = field_y * self.cell_size + self.offset_y
+                        offset_x = x - actual_x
+                        offset_y = y - actual_y
+                        self.dragged_picture = DraggedPicture(
+                            symbol, actual_x, actual_y, offset_x, offset_y)
 
         elif event.type == MOUSEMOTION:
             if self.dragged_picture is not None:
@@ -187,11 +195,11 @@ class StillPicture:
 
 
 class DraggedPicture:
-    def __init__(self, still_picture: StillPicture,
+    def __init__(self, symbol, x, y,
                  offset_x: int, offset_y: int):
-        self.symbol = still_picture.symbol
-        self.x = still_picture.rect.x
-        self.y = still_picture.rect.y
+        self.symbol = symbol
+        self.x = x
+        self.y = y
         self.offset_x = offset_x
         self.offset_y = offset_y
 

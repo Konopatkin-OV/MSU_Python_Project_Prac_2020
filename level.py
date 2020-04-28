@@ -57,13 +57,6 @@ class Level:
         if not all(len(column) == len(field[0]) for column in field):
             raise IOError
 
-        # Check that the field is surrounded by walls
-        if not all(symbol == 'w' for symbol in field[0]) or \
-                not all(symbol == 'w' for symbol in field[-1]) or \
-                not all(column[0] == 'w' for column in field) or \
-                not all(column[-1] == 'w' for column in field):
-            raise IOError
-
         flat_field = [symbol for column in field for symbol in column]
 
         # Check that all the symbols are acceptable
@@ -77,9 +70,17 @@ class Level:
             raise IOError
 
         # Check that there are boxes on the field and each box has its place
-        boxes = len(list(filter(lambda symbol: symbol in 'bB', flat_field)))
-        box_cells = len(list(filter(lambda symbol: symbol in 'xPB', flat_field)))
+        # And that the level is not already completed
+        boxes = len(list(filter(lambda symbol: symbol in 'b', flat_field)))
+        box_cells = len(list(filter(lambda symbol: symbol in 'xP', flat_field)))
         if boxes == 0 or boxes != box_cells:
+            raise IOError
+
+        # Check that the field is surrounded by walls
+        if not all(symbol == 'w' for symbol in field[0]) or \
+                not all(symbol == 'w' for symbol in field[-1]) or \
+                not all(column[0] == 'w' for column in field) or \
+                not all(column[-1] == 'w' for column in field):
             raise IOError
 
     """Indicates that the level is complete."""
