@@ -1,12 +1,12 @@
 import os
+from level import Level
 
 
 class CustomLevel:
     min_width = 3
     min_height = 3
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
         self.width = self.min_width
         self.height = self.min_height
         self.field = [['w'] * self.width for i in range(self.height)]
@@ -63,60 +63,77 @@ class CustomLevel:
                 y < 0 or y >= self.height:
             return
 
-        self.field[x][y] = symbol
-
         if symbol == 'w':
-            if x == 1:
-                while self.width > self.min_width:
-                    if self._check_column(1):
-                        self._remove_column(1)
-                    else:
-                        break
-            elif x == self.width - 2:
-                while self.width > self.min_width:
-                    if self._check_column(-2):
-                        self._remove_column(-2)
-                    else:
-                        break
-            if y == 1:
-                while self.height > self.min_height:
-                    if self._check_row(1):
-                        self._remove_row(1)
-                    else:
-                        break
-            elif y == self.height - 2:
-                while self.height > self.min_height:
-                    if self._check_row(-2):
-                        self._remove_row(-2)
-                    else:
-                        break
-        else:
-            if x == 0:
-                self._add_left_column()
-            elif x == self.width - 1:
-                self._add_right_column()
-            if y == 0:
-                self._add_top_row()
-            elif y == self.height - 1:
-                self._add_bottom_row()
+            self._put_wall(x, y)
+        elif symbol == ' ':
+            self._put_free_cell(x, y)
+        elif symbol == 'x':
+            if self.field[x][y] in ' PB':
+                self.field[x][y] = 'x'
+        elif symbol == 'b':
+            if self.field[x][y] == ' ':
+                self.field[x][y] = 'b'
+            elif self.field[x][y] == 'x':
+                self.field[x][y] = 'B'
+        elif symbol == 'p':
+            if self.field[x][y] == ' ':
+                self.field[x][y] = 'p'
+            elif self.field[x][y] == 'x':
+                self.field[x][y] = 'P'
+
+    def _put_wall(self, x: int, y: int):
+        self.field[x][y] = 'w'
+
+        if x == 1:
+            while self.width > self.min_width:
+                if self._check_column(1):
+                    self._remove_column(1)
+                else:
+                    break
+        elif x == self.width - 2:
+            while self.width > self.min_width:
+                if self._check_column(-2):
+                    self._remove_column(-2)
+                else:
+                    break
+        if y == 1:
+            while self.height > self.min_height:
+                if self._check_row(1):
+                    self._remove_row(1)
+                else:
+                    break
+        elif y == self.height - 2:
+            while self.height > self.min_height:
+                if self._check_row(-2):
+                    self._remove_row(-2)
+                else:
+                    break
+
+    def _put_free_cell(self, x: int, y: int):
+        self.field[x][y] = ' '
+
+        if x == 0:
+            self._add_left_column()
+        elif x == self.width - 1:
+            self._add_right_column()
+        if y == 0:
+            self._add_top_row()
+        elif y == self.height - 1:
+            self._add_bottom_row()
 
     """Saves the level to a file."""
 
-    def save(self):
+    def save(self) -> str:
+        Level.check_for_validity(self.field)
+
         order = 1
         while os.path.exists(f'levels/my level {order}.lvl'):
             order = order + 1
-
         name = f'my level {order}'
         file = open(f'levels/{name}.lvl', 'w')
-        # for row in map(lambda symbol: ''.join(symbol), zip(*self.field)):
         for line in zip(*self.field):
             for symbol in line:
                 file.write(symbol)
             file.write('\n')
         file.close()
-        self.app.GUIs['moveBoxesGame'].add_level(name)
-
-        number_list = list(map (lambda s: s.replace('ChooseLevel',''), list(filter(lambda s: s.startswith('ChooseLevel'), self.app.GUIs.keys()))))
-        max_number = max(list(map(int, number_list)))       
-        self.app.GUIs[f'ChooseLevel{max_number}'].add_level(name)
+        return name
