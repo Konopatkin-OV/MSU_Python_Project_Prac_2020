@@ -164,6 +164,10 @@ class LevelEditor(GUI):
                 try:
                     name = self.custom_level.save()
                     self.application.GUIs['moveBoxesGame'].add_level(name)
+                    number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
+                                           list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))
+                    max_number = max(list(map(int, number_list)))
+                    self.application.GUIs[f'ChooseLevel{max_number}'].add_level(name)
                     self.clear()
                 except IOError:
                     print('The level is not completed!')
