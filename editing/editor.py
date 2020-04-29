@@ -196,7 +196,9 @@ class LevelEditor(GUI):
                     self.level_name_box.str = 'my level'
                 try:
                     level_name = self.application.GUIs["NewLevel"].level_name_box.str
-                    name = self.custom_level.save(level_name)
+                    move_boxes_game = self.application.GUIs['moveBoxesGame']
+                    name = self.custom_level.save(
+                        level_name, move_boxes_game.levels[-1].order)
                     # self.application.GUIs['moveBoxesGame'].add_level(name)
                     number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
                                            list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))

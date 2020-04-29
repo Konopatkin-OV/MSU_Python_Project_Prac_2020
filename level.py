@@ -17,6 +17,7 @@ class Level:
         self.name = file_name
 
         file = open(f'levels/{file_name}.lvl', 'r')
+        self.order = int(file.readline().split()[0])
         field = [[symbol for symbol in line if symbol != '\n']
                  for line in file if line != '\n']
         file.close()
