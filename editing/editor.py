@@ -151,10 +151,6 @@ class LevelEditor(GUI):
 
                 if self.dragged_picture is None:
                     x, y = event.pos
-                    for button in self.buttons:
-                        if button.rect.collidepoint(event.pos):
-                            button.press()
-                            return
 
                     for still_picture in self.still_pictures:
                         if still_picture.rect.collidepoint(*event.pos):
@@ -210,9 +206,7 @@ class LevelEditor(GUI):
                     self.level_name_box.str = 'my level'
                 except IOError:
                     print('The level is not completed!')
-                self.buttons[-1].color, self.buttons[-1].new_color = \
-                    self.buttons[-1].new_color, self.buttons[-1].color
-
+                
 
 class StillPicture:
     def __init__(self, symbol: str):
