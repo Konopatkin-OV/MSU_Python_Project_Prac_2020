@@ -17,7 +17,8 @@ class MoveBoxesGame(GUI):
         self.levels = []
 
         root, dirs, files = next(os.walk('levels/', topdown=True))
-        for name in files:
+        for name in sorted(files, key=lambda x: os.path.getmtime(os.path.abspath(f'levels/{x}'))):
+#        for name in sorted(files):
             if name.endswith('.lvl'):
                 name = name[:-4]
                 try:
