@@ -22,8 +22,10 @@ class MoveBoxesGame(GUI):
                 name = name[:-4]
                 try:
                     self.levels.append(Level(name))
-                except IOError:
+                except Exception:
                     print(f'Level {name} is not valid.')
+
+        self.levels.sort(key=lambda level: level.order)
 
         self.current_index = 1
         self.current_level = self.levels[self.current_index]

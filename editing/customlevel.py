@@ -112,7 +112,7 @@ class CustomLevel:
 
     """Saves the level to a file."""
 
-    def save(self, level_name) -> str:
+    def save(self, level_name, max_order) -> str:
         field = []
         for column in self.field:
             actual_column = []
@@ -140,6 +140,7 @@ class CustomLevel:
         else:
             name = level_name
         file = open(f'levels/{name}.lvl', 'w')
+        file.write(f'{max_order + 1}\n')
         for line in zip(*field):
             for symbol in line:
                 file.write(symbol)
