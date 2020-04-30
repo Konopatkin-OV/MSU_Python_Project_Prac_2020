@@ -17,8 +17,8 @@ class MoveBoxesGame(GUI):
         self.levels = []
 
         root, dirs, files = next(os.walk('levels/', topdown=True))
-        for name in sorted(files, key=lambda x: os.path.getmtime(os.path.abspath(f'levels/{x}'))):
-#        for name in sorted(files):
+#        for name in sorted(files, key=lambda x: os.path.getmtime(os.path.abspath(f'levels/{x}'))):
+        for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
                 try:
@@ -155,6 +155,12 @@ class MoveBoxesGame(GUI):
         h = screen.get_height() - label.LABEL_SIZE[1]
         self.labels.append(label.Label(screen, (0, h)))
 
+        # success label
+        w = screen.get_width() - 3 * label.LABEL_SIZE[0] / 2    
+        h = screen.get_height() / 2 - label.LABEL_SIZE[1] / 2
+        self.labels.append(label.Label(screen, (w, h)))
+        self.success_str = ''
+
     def set_image(self, name, image):
         self.images[name] = image
 
@@ -200,7 +206,8 @@ class MoveBoxesGame(GUI):
     def check_level_finish(self):
         if self.current_level.is_complete():
             self.level_finished = True
-            print("SUCCESS!")
+#            print("SUCCESS!")
+            self.success_str = "SUCCESS!" 
 
     def render(self):
         screen = self.application.screen
@@ -270,6 +277,7 @@ class MoveBoxesGame(GUI):
             level_name = self.current_level.name
         self.labels[0].render(level_name, True)
         self.labels[1].render(f'Moves: {self.moves_made}', True)
+        self.labels[2].render(self.success_str, True)
 
         pygame.display.update()
 
@@ -354,9 +362,11 @@ class MoveBoxesGame(GUI):
                         self.reset()
                         if self.current_index < len(self.levels) - 1:
                             self.select_level(self.current_index + 1)
-                        else:
+                        else: 
+                            self.reset()
                             return '__main__'
                     else:
+                        self.success_str = 'Level is not comlete'
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
                     self.reset()
@@ -378,6 +388,7 @@ class MoveBoxesGame(GUI):
         self.level_finished = False
         self.attempting_grabbing = False
         self.grabbed_box = None
+        self.success_str = ''
 
         self.is_moving = False
         self.moving_time = 0.0
