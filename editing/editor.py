@@ -65,6 +65,7 @@ class LevelEditor(GUI):
         self.custom_level = CustomLevel()
         self.dragged_picture = None
         self.calculate_cell_size()
+        self.level_name_box.str = 'my level'
 
     def calculate_cell_size(self):
         reduction_x, reduction_y = 200, 20
@@ -189,6 +190,7 @@ class LevelEditor(GUI):
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
+                self.clear()
                 return event.name
             elif event.name == 'save':
                 # user didn't save the name
