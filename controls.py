@@ -116,7 +116,7 @@ class Controls(GUI):
             b.render()
         for l in self.L:
             l[0].render(l[1])
-        self.label.render('SETTINGS')
+        self.label.render('CONTROLS')
         pygame.display.update()
 
     """Check key values collision."""

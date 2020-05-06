@@ -156,9 +156,9 @@ class MoveBoxesGame(GUI):
         self.labels.append(label.Label(screen, (0, h)))
 
         # success label
-        w = screen.get_width() - 3 * label.LABEL_SIZE[0] / 2    
+        w = screen.get_width() - label.LABEL_SIZE[0]   
         h = screen.get_height() / 2 - label.LABEL_SIZE[1] / 2
-        self.labels.append(label.Label(screen, (w, h)))
+        self.labels.append(label.Label(screen, (w, h), font_size = 25))
         self.success_str = ''
 
     def set_image(self, name, image):
@@ -355,6 +355,7 @@ class MoveBoxesGame(GUI):
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
+                self.reset()
                 return event.name
             elif event.name == 'moveBoxesGame':
                 if event.lvl == 'next':
