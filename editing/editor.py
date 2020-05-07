@@ -6,7 +6,7 @@ from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import smoothscale
 from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
-from textbox import TextBox, TEXTBOX_SIZE
+from textbox import TextBox, TEXTBOX_SIZE, FRAME_WIDTH
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
@@ -34,14 +34,14 @@ class LevelEditor(GUI):
                                StillPicture('p'),
                                StillPicture('x')]
 
+        self.level_name_box = TextBox(
+            self.application.screen,
+            (self.application.screen.get_width() / 2 - TEXTBOX_SIZE[0] / 2, 10))
+
         self.cell_size = None
         self.offset_x, self.offset_y = None, None
         self.symbols_to_images = {}
         self.calculate_cell_size()
-
-        self.level_name_box = TextBox(
-                                  self.application.screen, 
-                                  (self.application.screen.get_width()/2 - TEXTBOX_SIZE[0]/2, 10))
 
         self.buttons = [
             Button(
@@ -67,7 +67,7 @@ class LevelEditor(GUI):
         self.calculate_cell_size()
 
     def calculate_cell_size(self):
-        reduction_x, reduction_y = 200, 20
+        reduction_x, reduction_y = 200, 2 * self.level_name_box.rect.top + self.level_name_box.rect.height
         screen_width, screen_height = self.application.screen.get_size()
         screen_width -= 2 * reduction_x
         screen_height -= 2 * reduction_y
