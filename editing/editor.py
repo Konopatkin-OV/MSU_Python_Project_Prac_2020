@@ -6,7 +6,7 @@ from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import smoothscale
 from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
-from textbox import TextBox, TEXTBOX_SIZE, FRAME_WIDTH
+from textbox import TextBox, TEXTBOX_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
@@ -65,6 +65,7 @@ class LevelEditor(GUI):
         self.custom_level = CustomLevel()
         self.dragged_picture = None
         self.calculate_cell_size()
+        self.level_name_box.str = 'my level'
 
     def calculate_cell_size(self):
         reduction_x, reduction_y = 200, 2 * self.level_name_box.rect.top + self.level_name_box.rect.height
@@ -189,6 +190,7 @@ class LevelEditor(GUI):
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
+                self.clear()
                 return event.name
             elif event.name == 'save':
                 # user didn't save the name

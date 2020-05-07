@@ -36,11 +36,6 @@ class ChooseLevel(GUI):
 
 
         self.levels = app.GUIs['moveBoxesGame'].levels
-       
-       # if levels is None:
-       #     self.levels = app.GUIs['moveBoxesGame'].levels   #list(app.GUIs['moveBoxesGame'].levels)
-       # else:
-       #     self.levels = levels
         self.num_added_buttons = num_added_buttons
         buttons_per_page = col * self.button_num_per_col + num_added_buttons
         number_of_buttons = len(self.levels)
@@ -116,8 +111,6 @@ class ChooseLevel(GUI):
 
         screen = self.application.screen
 
-#        self.levels.append(level)
-
         if self.current_w and self.current_h:
             if name.isdigit() and len(level.name) < 4:
                 button_name = f'LEVEL {level.name}'
@@ -143,13 +136,10 @@ class ChooseLevel(GUI):
             h_next = (self.offset_h + BUTTONS_NUM_PER_COL) * 2 * button.BUTTON_SIZE[1]
             self.gui_B.append(button.Button('BACK', screen, e, (w_back, h_next)))
             w_next = screen.get_width() / 2 + button.BUTTON_SIZE[0] / 4
-            # button to next page
-
-#            i = len(self.levels) - 1
             
+            # button to next page           
             e = pygame.event.Event(pygame.USEREVENT,
                                    {'app': self.application, 'name': f'ChooseLevel{index}'})
-#                                    'index': index})
             self.gui_B.append(button.Button('NEXT', screen, e, (w_next, h_next)))
             ChooseLevel(self.application, f'ChooseLevel{index}', index)
 
