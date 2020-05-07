@@ -5,7 +5,7 @@ import pygame
 import pygame.locals
 import menu
 import button
-import label
+from label import Label, LABEL_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
@@ -148,17 +148,17 @@ class MoveBoxesGame(GUI):
         self.labels = []
 
         # current level label
-        w = screen.get_width() / 2 - label.LABEL_SIZE[0] / 2
-        self.labels.append(label.Label(screen, (w, 0)))
+        w = screen.get_width() / 2 - LABEL_SIZE[0] / 2
+        self.labels.append(Label(screen, (w, 0)))
 
         # current moves amount
-        h = screen.get_height() - label.LABEL_SIZE[1]
-        self.labels.append(label.Label(screen, (0, h)))
+        h = screen.get_height() - LABEL_SIZE[1]
+        self.labels.append(Label(screen, (0, h)))
 
         # success label
-        w = screen.get_width() - label.LABEL_SIZE[0]   
-        h = screen.get_height() / 2 - label.LABEL_SIZE[1] / 2
-        self.labels.append(label.Label(screen, (w, h), font_size = 25))
+        w = screen.get_width() - LABEL_SIZE[0]
+        h = screen.get_height() / 2 - LABEL_SIZE[1] / 2
+        self.labels.append(Label(screen, (w, h), font_size = 25))
         self.success_str = ''
 
     def set_image(self, name, image):
@@ -216,7 +216,7 @@ class MoveBoxesGame(GUI):
         screen.blit(self.images['background'], (0, 0))
 
         # allocate center part of screen to the game field and borders to menu elements
-        game_field_offset = (200, 20)
+        game_field_offset = (200, LABEL_SIZE[1])
         gf_off_x, gf_off_y = game_field_offset
         s_w, s_h = screen.get_size()
         s_w -= 2 * gf_off_x

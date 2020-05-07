@@ -34,14 +34,14 @@ class LevelEditor(GUI):
                                StillPicture('p'),
                                StillPicture('x')]
 
+        self.level_name_box = TextBox(
+            self.application.screen,
+            (self.application.screen.get_width() / 2 - TEXTBOX_SIZE[0] / 2, 10))
+
         self.cell_size = None
         self.offset_x, self.offset_y = None, None
         self.symbols_to_images = {}
         self.calculate_cell_size()
-
-        self.level_name_box = TextBox(
-                                  self.application.screen, 
-                                  (self.application.screen.get_width()/2 - TEXTBOX_SIZE[0]/2, 10))
 
         self.buttons = [
             Button(
@@ -68,7 +68,7 @@ class LevelEditor(GUI):
         self.level_name_box.str = 'my level'
 
     def calculate_cell_size(self):
-        reduction_x, reduction_y = 200, 20
+        reduction_x, reduction_y = 200, 2 * self.level_name_box.rect.top + self.level_name_box.rect.height
         screen_width, screen_height = self.application.screen.get_size()
         screen_width -= 2 * reduction_x
         screen_height -= 2 * reduction_y
