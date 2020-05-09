@@ -17,7 +17,7 @@ class TextBox():
 
         # create text font
         self.font = pygame.font.SysFont('freesansboldttf', font_size)
-        self.str = 'my level'
+        self.str = ''
 
         self.color = color     
         self.start_writing = 0

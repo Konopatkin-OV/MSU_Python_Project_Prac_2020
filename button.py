@@ -2,12 +2,13 @@ import pygame
 import gradients
 
 TEXT_COLOR = 200, 200, 200
+#TEXT_COLOR = 0, 0, 0
 BUTTON_SIZE = 130, 30
 
 
 class Button:
-    def __init__(self, name, screen, event, coord, button_size=BUTTON_SIZE, color=pygame.Color(70, 50, 70),
-                 font_size=30):
+    def __init__(self, name, screen, event, coord, button_size=BUTTON_SIZE, color= \
+                 pygame.Color(70, 50, 70), font_size= 25): #30):
         self.name = name
         self.event = event
 
@@ -21,8 +22,10 @@ class Button:
 
         # create button text
         self.font = pygame.font.SysFont('freesansboldttf', font_size)
+         
+#        self.font = pygame.font.SysFont('Unifontttf', font_size)
 
-        #        self.font = pygame.font.SysFont('SegoeUISymbolttf', font_size)
+#        self.font = pygame.font.SysFont('SegoeUISymbolttf', font_size)
         self.new_color = color
         self.color = color.r + 62, color.g + 62, color.b + 62, color.a
 

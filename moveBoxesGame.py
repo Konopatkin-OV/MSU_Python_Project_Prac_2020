@@ -9,7 +9,6 @@ from label import Label, LABEL_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
-
 class MoveBoxesGame(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
@@ -25,7 +24,7 @@ class MoveBoxesGame(GUI):
                     self.levels.append(Level(name))
                 except Exception:
                     print(f'Level {name} is not valid.')
-
+        
         self.levels.sort(key=lambda level: level.order)
 
         self.current_index = 1
@@ -85,22 +84,22 @@ class MoveBoxesGame(GUI):
 
         # button to menu
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
-        self.buttons['menu'] = button.Button('MENU', screen, button_event, (0, 0))
+        self.buttons['menu'] = button.Button(_('MENU'), screen, button_event, (0, 0))
 
         # next level button
         w = screen.get_width() - button.BUTTON_SIZE[0]
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'next'})
-        self.buttons['next_lvl'] = button.Button('NEXT', screen, button_event, (w, 0))
+        self.buttons['next_lvl'] = button.Button(_('NEXT'), screen, button_event, (w, 0))
 
         # previous level button
         h = 3 * button.BUTTON_SIZE[1] / 2
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'this'})
-        self.buttons['reset'] = button.Button('RESET', screen, button_event, (w, h))
+        self.buttons['reset'] = button.Button(_('RESET'), screen, button_event, (w, h))
 
         # restart button
         w -= 5 * button.BUTTON_SIZE[0] / 4
         button_event = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'lvl': 'previous'})
-        self.buttons['prev_lvl'] = button.Button('PREVIOUS', screen, button_event, (w, 0))
+        self.buttons['prev_lvl'] = button.Button(_('PREVIOUS'), screen, button_event, (w, 0))
 
         # control buttons
         button_size = 35,35
@@ -112,7 +111,7 @@ class MoveBoxesGame(GUI):
 
         button_event = pygame.event.Event(pygame.locals.KEYDOWN)
         button_event.key = pygame.locals.K_UP
-        b_up = button.Button('up', screen, button_event, (w, h), button_size, button_color, font_size)
+        b_up = button.Button(_('up'), screen, button_event, (w, h), button_size, button_color, font_size)
         self.buttons[0] = b_up
 
         button_size_1 = 46, 30
@@ -120,20 +119,20 @@ class MoveBoxesGame(GUI):
         w -= button_size_1[0] / 2 - button_size[0] / 2
         button_event = pygame.event.Event(pygame.locals.KEYDOWN)
         button_event.key = pygame.locals.K_DOWN
-        b_down = button.Button('down', screen, button_event, (w, h), button_size_1, button_color, font_size)
+        b_down = button.Button(_('down'), screen, button_event, (w, h), button_size_1, button_color, font_size)
         self.buttons[1] = b_down
 
         w -= 5 * button_size[0] / 3
         h = screen.get_height() - 5 * button_size[1]
         button_event = pygame.event.Event(pygame.locals.KEYDOWN)
         button_event.key = pygame.locals.K_LEFT
-        b_left = button.Button('left', screen, button_event, (w, h), button_size_1, button_color, font_size)
+        b_left = button.Button(_('left'), screen, button_event, (w, h), button_size_1, button_color, font_size)
         self.buttons[2] = b_left
 
         w += 10 * button_size[0] / 3
         button_event = pygame.event.Event(pygame.locals.KEYDOWN)
         button_event.key = pygame.locals.K_RIGHT
-        b_right = button.Button('right', screen, button_event, (w, h), button_size_1, button_color, font_size)
+        b_right = button.Button(_('right'), screen, button_event, (w, h), button_size_1, button_color, font_size)
         self.buttons[3] = b_right
 
         button_size_2 = 100, 30
@@ -141,7 +140,7 @@ class MoveBoxesGame(GUI):
         h += 2 * button_size[1]
         button_event = pygame.event.Event(pygame.locals.KEYDOWN)
         button_event.key = pygame.locals.K_e
-        b_grab = button.Button('grab', screen, button_event, (w, h), button_size_2, button_color, font_size)
+        b_grab = button.Button(_('grab'), screen, button_event, (w, h), button_size_2, button_color, font_size)
         self.buttons['grab'] = b_grab
 
         # labels
@@ -207,7 +206,7 @@ class MoveBoxesGame(GUI):
         if self.current_level.is_complete():
             self.level_finished = True
 #            print("SUCCESS!")
-            self.success_str = "SUCCESS!" 
+            self.success_str = _("SUCCESS!") 
 
     def render(self):
         screen = self.application.screen
@@ -272,11 +271,11 @@ class MoveBoxesGame(GUI):
 
         # render labels
         if self.current_level.name.isdigit() and len(self.current_level.name) < 4:
-            level_name = f'LEVEL {self.current_level.name}'
+            level_name = _('LEVEL ') + str(self.current_level.name)
         else:
             level_name = self.current_level.name
         self.labels[0].render(level_name, True)
-        self.labels[1].render(f'Moves: {self.moves_made}', True)
+        self.labels[1].render(_('Moves: ') + str(self.moves_made), True)
         self.labels[2].render(self.success_str, True)
 
         pygame.display.update()
@@ -305,6 +304,7 @@ class MoveBoxesGame(GUI):
                     else:
                         return '__main__'
                 else:
+                    self.success_str = _('Level is not comlete')
                     print(f'Level {self.current_level.name} is not complete.')
             elif event.key == self.keys["prev_lvl"]:
                 self.reset()
@@ -367,7 +367,7 @@ class MoveBoxesGame(GUI):
                             self.reset()
                             return '__main__'
                     else:
-                        self.success_str = 'Level is not comlete'
+                        self.success_str = _('Level is not comlete')
                         print(f'Level {self.current_level.name} is not complete.')
                 elif event.lvl == 'this':
                     self.reset()

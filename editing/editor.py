@@ -10,7 +10,6 @@ from textbox import TextBox, TEXTBOX_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
-
 class LevelEditor(GUI):
     def __init__(self, app, name: str):
         super().__init__(app, name)
@@ -37,6 +36,7 @@ class LevelEditor(GUI):
         self.level_name_box = TextBox(
             self.application.screen,
             (self.application.screen.get_width() / 2 - TEXTBOX_SIZE[0] / 2, 10))
+        self.level_name_box.str = _('my level')
 
         self.cell_size = None
         self.offset_x, self.offset_y = None, None
@@ -45,11 +45,11 @@ class LevelEditor(GUI):
 
         self.buttons = [
             Button(
-                'MENU', self.application.screen,
+                _('MENU'), self.application.screen,
                 Event(pygame.USEREVENT,
                       {'app': self.application, 'name': '__main__'}), (0, 0)),
             Button(
-                'SAVE',
+                _('SAVE'),
                 self.application.screen,
                 Event(pygame.USEREVENT, {'app': self.application, 'name': 'save'}),
                 (self.application.screen.get_width() - BUTTON_SIZE[0], 0)),
@@ -65,7 +65,7 @@ class LevelEditor(GUI):
         self.custom_level = CustomLevel()
         self.dragged_picture = None
         self.calculate_cell_size()
-        self.level_name_box.str = 'my level'
+        self.level_name_box.str = _('my level')
 
     def calculate_cell_size(self):
         reduction_x, reduction_y = 200, 2 * self.level_name_box.rect.top + self.level_name_box.rect.height
@@ -195,7 +195,7 @@ class LevelEditor(GUI):
             elif event.name == 'save':
                 # user didn't save the name
                 if self.level_name_box.str[-1] == '|':
-                    self.level_name_box.str = 'my level'
+                    self.level_name_box.str = _('my level')
                 try:
                     level_name = self.application.GUIs["NewLevel"].level_name_box.str
                     move_boxes_game = self.application.GUIs['moveBoxesGame']
@@ -207,7 +207,6 @@ class LevelEditor(GUI):
                     max_number = max(list(map(int, number_list)))
                     self.application.GUIs[f'ChooseLevel{max_number}'].add_level(name)
                     self.clear()
-                    self.level_name_box.str = 'my level'
                 except IOError:
                     print('The level is not completed!')
                 

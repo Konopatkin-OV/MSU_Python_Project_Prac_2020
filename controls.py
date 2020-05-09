@@ -7,7 +7,6 @@ import label
 
 FRAME_WIDTH = 3
 
-
 class Controls(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
@@ -45,62 +44,62 @@ class Controls(GUI):
 
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'grab'))
+                                   color=pygame.Color(70, 50, 70)), _('grab')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 0})
         self.B.append(button.Button('UP', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'up'))
+                                   color=pygame.Color(70, 50, 70)), _('up')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 1})
         self.B.append(button.Button('DOWN', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'down'))
+                                   color=pygame.Color(70, 50, 70)), _('down')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 2})
         self.B.append(button.Button('LEFT', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'left'))
+                                   color=pygame.Color(70, 50, 70)), _('left')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 3})
         self.B.append(button.Button('RIGHT', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'right'))
+                                   color=pygame.Color(70, 50, 70)), _('right')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 'prev_lvl'})
         self.B.append(button.Button('PG DOWN', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'prev lvl'))
+                                   color=pygame.Color(70, 50, 70)), _('prev lvl')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 'next_lvl'})
         self.B.append(button.Button('PG UP', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'next lvl'))
+                                   color=pygame.Color(70, 50, 70)), _('next lvl')))
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'moveBoxesGame', 'move': 'reset'})
         self.B.append(button.Button('R', screen, e, (w, h)))
         self.L.append((label.Label(screen, (w1, h), label_size=(button.BUTTON_SIZE[0],
                                                                 button.BUTTON_SIZE[1] + 3),
-                                   color=pygame.Color(70, 50, 70)), 'reset'))
+                                   color=pygame.Color(70, 50, 70)), _('reset')))
 
         # button to menu
         h += 2 * button.BUTTON_SIZE[1]
         w1 += 3 * button.BUTTON_SIZE[0] / 4
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'Settings'})
-        self.B.append(button.Button('BACK', screen, e, (w1, h)))
+        self.B.append(button.Button(_('BACK'), screen, e, (w1, h)))
 
         self.move = -1
 
@@ -116,7 +115,7 @@ class Controls(GUI):
             b.render()
         for l in self.L:
             l[0].render(l[1])
-        self.label.render('CONTROLS')
+        self.label.render(_('CONTROLS'))
         pygame.display.update()
 
     """Check key values collision."""

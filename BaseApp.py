@@ -5,6 +5,9 @@ from moveBoxesGame import MoveBoxesGame
 from menu import Menu
 from editing.editor import LevelEditor
 
+import sys
+import os.path
+import gettext
 
 # the main application class which initialises pygame and rules over interfaces...
 class Application(object):
@@ -49,6 +52,8 @@ class Application(object):
 
 
 if __name__ == '__main__':
+    datapath = os.path.dirname(sys.argv[0])
+    gettext.install('BaseApp', datapath)
     app = Application()
     gui = MoveBoxesGame(app, 'moveBoxesGame')
     levelEditor = LevelEditor(app, "NewLevel")

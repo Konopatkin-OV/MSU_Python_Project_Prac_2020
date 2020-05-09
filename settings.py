@@ -23,21 +23,21 @@ class Settings(GUI):
         w = screen.get_width() / 2 - button.BUTTON_SIZE[0] / 2 
         h = screen.get_height() / 2 - 3 * button.BUTTON_SIZE[1] 
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'Controls'})
-        self.B.append(button.Button('CONTROLS', screen, e, (w, h)))
+        self.B.append(button.Button(_('CONTROLS'), screen, e, (w, h)))
 
         controls.Controls(app, 'Controls')
 
         w -= 3 * button.BUTTON_SIZE[0] / 4
         h += 3 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'Mode'})
-        self.B.append(button.Button('Mode', screen, e, (w, h)))  
+        self.B.append(button.Button(_('MODE'), screen, e, (w, h)))  
 
         self.set_mode = False
 
         w +=  3 * button.BUTTON_SIZE[0] / 2
         h -=  button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'Classic'})
-        self.B.append(button.Button('CLASSIC', screen, e, (w, h)))
+        self.B.append(button.Button(_('CLASSIC'), screen, e, (w, h)))
         
         classic_coord = w - 3 * FRAME_WIDTH, h - 3 * FRAME_WIDTH
         size = button.BUTTON_SIZE[0] + 6 * FRAME_WIDTH, button.BUTTON_SIZE[1] + 7 * FRAME_WIDTH
@@ -48,7 +48,7 @@ class Settings(GUI):
 
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': 'Easy'})
-        self.B.append(button.Button('EASY', screen, e, (w, h)))
+        self.B.append(button.Button(_('EASY'), screen, e, (w, h)))
 
         easy_coord = w - 3 * FRAME_WIDTH, h - 3 * FRAME_WIDTH
         self.easy_rect = pygame.Rect(easy_coord, size)
@@ -60,7 +60,7 @@ class Settings(GUI):
         w +=  3 * button.BUTTON_SIZE[0] / 4
         h += 2 * button.BUTTON_SIZE[1]
         e = pygame.event.Event(pygame.USEREVENT, {'name': '__main__'})
-        self.B.append(button.Button('BACK', screen, e, (w, h)))
+        self.B.append(button.Button(_('BACK'), screen, e, (w, h)))
 
         # background
         bg_coord = screen.get_width() / 2 - 3 * button.BUTTON_SIZE[0]/2, h - 15 * button.BUTTON_SIZE[1] / 2
@@ -88,7 +88,7 @@ class Settings(GUI):
 
         for b in self.B:
             b.render()
-        self.label.render('SETTINGS')
+        self.label.render(_('SETTINGS'))
         pygame.display.update()
 
     """Button event handler."""
