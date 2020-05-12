@@ -332,7 +332,6 @@ class MoveBoxesGame(GUI):
                 dx, dy = cur_dir
 
                 x, y = self.current_level.player.get_pos()
-                c_w, c_h = self.current_level.width, self.current_level.height
                 g_x, g_y = x + dx, y + dy  # goal cell
 
                 if self.attempting_grabbing:
@@ -343,7 +342,6 @@ class MoveBoxesGame(GUI):
                 elif self.grabbed_box is not None:
                     b_x, b_y = self.grabbed_box.get_pos()
                     # dir to grabbed box and goal cell of grabbed box
-                    bd_x, bd_y = b_x - x, b_y - y
                     bg_x, bg_y = b_x + dx, b_y + dy
 
                     good_move = False
