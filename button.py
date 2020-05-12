@@ -6,8 +6,8 @@ BUTTON_SIZE = 130, 30
 
 
 class Button:
-    def __init__(self, name, screen, event, coord, button_size=BUTTON_SIZE, color=pygame.Color(70, 50, 70),
-                 font_size=30):
+    def __init__(self, name, screen, event, coord, button_size=BUTTON_SIZE,
+                 color=pygame.Color(70, 50, 70), font_size=25):
         self.name = name
         self.event = event
 
@@ -22,7 +22,6 @@ class Button:
         # create button text
         self.font = pygame.font.SysFont('freesansboldttf', font_size)
 
-        #        self.font = pygame.font.SysFont('SegoeUISymbolttf', font_size)
         self.new_color = color
         self.color = color.r + 62, color.g + 62, color.b + 62, color.a
 
@@ -31,8 +30,10 @@ class Button:
     """Render a button."""
 
     def render(self):
-        #        self.screen.fill(self.color, self.rect)
-        self.screen.blit(gradients.vertical(self.rect.size, self.color, self.new_color), self.rect)
+        self.screen.blit(gradients.vertical(self.rect.size,
+                                            self.color,
+                                            self.new_color),
+                         self.rect)
         self.screen.fill(self.color_bot, self.rect_bot)
 
         text = self.font.render(self.name, True, TEXT_COLOR)
@@ -45,19 +46,18 @@ class Button:
         self.color, self.new_color = self.new_color, self.color
         self.render()
         pygame.event.post(self.event)
- 
+
     """Button event handler."""
     def process_event(self, e, *pressed):
-        # indicates if button was pressed, pressing animation 
-        if e.type is pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(e.pos):       
+        # indicates if button was pressed, pressing animation
+        if e.type is pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(e.pos):
             self.color, self.new_color = self.new_color, self.color
             self.render()
             self.is_button_pressed = 1
-#            return True
             return
 
         # indicates if button was released
-        elif e.type is pygame.MOUSEBUTTONUP and self.is_button_pressed: #self.rect.collidepoint(e.pos):
+        elif e.type is pygame.MOUSEBUTTONUP and self.is_button_pressed:
             self.press()
             self.is_button_pressed = 0
-            return 
+            return
