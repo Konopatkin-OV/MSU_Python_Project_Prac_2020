@@ -31,9 +31,8 @@ class ChooseLevel(GUI):
 
         # background coordinates
         bg_coord = w - button.BUTTON_SIZE[0] / 2, h - button.BUTTON_SIZE[0] / 2
-        bg_size = col * 3 * button.BUTTON_SIZE[0] / 2 + button.BUTTON_SIZE[0] / 2, self.button_num_per_col * 2 * \
-            button.BUTTON_SIZE[1] + button.BUTTON_SIZE[0]
-
+        bg_size = col * 3 * button.BUTTON_SIZE[0] / 2 + button.BUTTON_SIZE[0] / 2,\
+            self.button_num_per_col * 2 * button.BUTTON_SIZE[1] + button.BUTTON_SIZE[0]
 
         self.levels = app.GUIs['moveBoxesGame'].levels
         self.num_added_buttons = num_added_buttons
@@ -48,7 +47,9 @@ class ChooseLevel(GUI):
                 button_name = _('LEVEL ') + str(level.name)
             else:
                 button_name = level.name
-            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame', 'lvl': i})
+            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application,
+                                                      'name': 'moveBoxesGame',
+                                                      'lvl': i})
             self.B.append(button.Button(button_name, screen, e, (w, h)))
             self.button_num_per_col -= 1
             i += 1
@@ -113,11 +114,14 @@ class ChooseLevel(GUI):
 
         if self.current_w and self.current_h:
             if name.isdigit() and len(level.name) < 4:
-                button_name = _('LEVEL ') +  str(level.name)
+                button_name = _('LEVEL ') + str(level.name)
             else:
                 button_name = level.name
-            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application, 'name': 'moveBoxesGame', 'lvl': index})
-            self.B.append(button.Button(button_name, screen, e, (self.current_w, self.current_h)))
+            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application,
+                                                      'name': 'moveBoxesGame',
+                                                      'lvl': index})
+            self.B.append(button.Button(button_name, screen, e,
+                                        (self.current_w, self.current_h)))
             self.button_num_per_col -= 1
 
             if len(self.levels) - self.num_added_buttons < BUTTONS_NUM_PER_COL * COLUMNS:
@@ -136,10 +140,10 @@ class ChooseLevel(GUI):
             h_next = (self.offset_h + BUTTONS_NUM_PER_COL) * 2 * button.BUTTON_SIZE[1]
             self.gui_B.append(button.Button(_('BACK'), screen, e, (w_back, h_next)))
             w_next = screen.get_width() / 2 + button.BUTTON_SIZE[0] / 4
-            
-            # button to next page           
-            e = pygame.event.Event(pygame.USEREVENT,
-                                   {'app': self.application, 'name': f'ChooseLevel{index}'})
+
+            # button to next page
+            e = pygame.event.Event(pygame.USEREVENT, {'app': self.application,
+                                                      'name': f'ChooseLevel{index}'})
             self.gui_B.append(button.Button(_('NEXT'), screen, e, (w_next, h_next)))
             ChooseLevel(self.application, f'ChooseLevel{index}', index)
 

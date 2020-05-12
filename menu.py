@@ -2,25 +2,24 @@ import pygame
 from gui import GUI
 import button
 import choose_level
-import moveBoxesGame
 import settings
 import label
-from image import WALL_IMAGE, FREE_CELL_IMAGE, \
-    BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
 FRAME_WIDTH = 3
+
 
 class Menu(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
         screen = self.application.screen
 
-        # background 
+        # background
         bg_coord = screen.get_width() / 2 - button.BUTTON_SIZE[0], 2 * label.LABEL_SIZE[1]
-        self.bg_rect = pygame.Rect(bg_coord, (2 * button.BUTTON_SIZE[0], screen.get_height() - 4 * label.LABEL_SIZE[1]))
+        self.bg_rect = pygame.Rect(bg_coord, (2 * button.BUTTON_SIZE[0],
+                                              screen.get_height() - 4 * label.LABEL_SIZE[1]))
         frame_coord = self.bg_rect.left + FRAME_WIDTH, self.bg_rect.top + FRAME_WIDTH
-        frame_size = 2 * button.BUTTON_SIZE[0] - 2 * FRAME_WIDTH, screen.get_height() - 4 * label.LABEL_SIZE[
-            1] - 2 * FRAME_WIDTH
+        frame_size = 2 * button.BUTTON_SIZE[0] - 2 * FRAME_WIDTH, \
+            screen.get_height() - 4 * label.LABEL_SIZE[1] - 2 * FRAME_WIDTH
         self.frame_rect = pygame.Rect(frame_coord, frame_size)
 
         # button list for menu
@@ -56,7 +55,6 @@ class Menu(GUI):
 
         choose_level.ChooseLevel(app, 'ChooseLevel0')
         settings.Settings(app, 'Settings')
-     
 
     """Button rendering."""
 
@@ -67,8 +65,8 @@ class Menu(GUI):
 #        walls_h = screen.get_height() / WALL_IMAGE.get_height()
 #        for i in range(int(walls_w)):
 #            for j in range(int(walls_h+1)):
-#                screen.blit(WALL_IMAGE, (i * WALL_IMAGE.get_width(),\
-#                                        j * WALL_IMAGE.get_height()))       
+#                screen.blit(WALL_IMAGE, (i * WALL_IMAGE.get_width(),
+#                                         j * WALL_IMAGE.get_height()))
 #        screen.fill(pygame.Color(255, 190, 192, 255), self.bg_rect)
 
         screen.fill(pygame.Color(100, 80, 100), self.bg_rect)

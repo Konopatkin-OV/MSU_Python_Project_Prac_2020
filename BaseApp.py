@@ -1,6 +1,5 @@
 import pygame
 import pygame.locals
-from gui import GUI
 from moveBoxesGame import MoveBoxesGame
 from menu import Menu
 from editing.editor import LevelEditor
@@ -9,9 +8,11 @@ import sys
 import os.path
 import gettext
 
-# the main application class which initialises pygame and rules over interfaces...
+
+# the main application class which initialises pygame and rules over interfaces
 class Application(object):
-    def __init__(self, app_name="Test application", screen_size=(1280, 720), max_fps=60):
+    def __init__(self, app_name="Test application",
+                 screen_size=(1280, 720), max_fps=60):
         # initialise pygame, display screen object and clock timer
         pygame.init()
         self.screen = pygame.display.set_mode(screen_size, 0, 32)
@@ -32,7 +33,7 @@ class Application(object):
             # maybe raise something nasty?
             return
 
-        # something like the main application cycle but only switching interfaces like a stack
+        # the main application cycle but only switching interfaces like a stack
         running = True
         while running:
             res = cur_guis[-1].run()
@@ -59,4 +60,3 @@ if __name__ == '__main__':
     levelEditor = LevelEditor(app, "NewLevel")
     menu = Menu(app, '__main__')
     app.start()
-

@@ -10,6 +10,7 @@ from textbox import TextBox, TEXTBOX_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
 
+
 class LevelEditor(GUI):
     def __init__(self, app, name: str):
         super().__init__(app, name)
@@ -58,7 +59,7 @@ class LevelEditor(GUI):
                 self.application.screen,
                 Event(pygame.USEREVENT, {'app': self.application, 'name': 'ok'}),
                 (self.level_name_box.rect_box.right + 10, self.level_name_box.rect.top),
-                button_size = (40, 30))
+                button_size=(40, 30))
         ]
 
     def clear(self):
@@ -68,7 +69,8 @@ class LevelEditor(GUI):
         self.level_name_box.str = _('my level')
 
     def calculate_cell_size(self):
-        reduction_x, reduction_y = 200, 2 * self.level_name_box.rect.top + self.level_name_box.rect.height
+        reduction_x, reduction_y = 200, \
+            2 * self.level_name_box.rect.top + self.level_name_box.rect.height
         screen_width, screen_height = self.application.screen.get_size()
         screen_width -= 2 * reduction_x
         screen_height -= 2 * reduction_y
@@ -129,7 +131,7 @@ class LevelEditor(GUI):
         # render buttons
         for button in self.buttons:
             button.render()
-        
+
         # render textbox
         self.level_name_box.render()
 
@@ -143,7 +145,7 @@ class LevelEditor(GUI):
         # press a button
         for button in self.buttons:
             button.process_event(event)
-    
+
         if event.type == MOUSEBUTTONDOWN:
             if event.button == 1:
                 if self.level_name_box.rect.collidepoint(event.pos):
@@ -186,7 +188,7 @@ class LevelEditor(GUI):
                 self.custom_level.put(
                     self.dragged_picture.symbol, field_x, field_y)
                 self.calculate_cell_size()
-                self.dragged_picture = None  
+                self.dragged_picture = None
 
         elif event.type == pygame.locals.USEREVENT:
             if event.name == '__main__':
@@ -203,13 +205,14 @@ class LevelEditor(GUI):
                         level_name, move_boxes_game.levels[-1].order)
                     # self.application.GUIs['moveBoxesGame'].add_level(name)
                     number_list = list(map(lambda s: s.replace('ChooseLevel', ''),
-                                           list(filter(lambda s: s.startswith('ChooseLevel'), self.application.GUIs.keys()))))
+                                           list(filter(lambda s: s.startswith('ChooseLevel'),
+                                                       self.application.GUIs.keys()))))
                     max_number = max(list(map(int, number_list)))
                     self.application.GUIs[f'ChooseLevel{max_number}'].add_level(name)
                     self.clear()
                 except IOError:
                     print('The level is not completed!')
-                
+
 
 class StillPicture:
     def __init__(self, symbol: str):

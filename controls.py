@@ -1,31 +1,29 @@
 import pygame
 from gui import GUI
 import button
-import moveBoxesGame
-import menu
 import label
 
 FRAME_WIDTH = 3
+
 
 class Controls(GUI):
     def __init__(self, app, name):
         super().__init__(app, name)
         screen = self.application.screen
 
-        # background 
+        # background
         bg_coord = screen.get_width() / 2 - 2 * button.BUTTON_SIZE[0], 2 * label.LABEL_SIZE[1]
-        self.bg_rect = pygame.Rect(bg_coord, (4 * button.BUTTON_SIZE[0], screen.get_height() - 3 * label.LABEL_SIZE[1]))
+        self.bg_rect = pygame.Rect(bg_coord, (4 * button.BUTTON_SIZE[0],
+                                              screen.get_height() - 3 * label.LABEL_SIZE[1]))
         frame_coord = self.bg_rect.left + FRAME_WIDTH, self.bg_rect.top + FRAME_WIDTH
-        frame_size = 4 * button.BUTTON_SIZE[0] - 2 * FRAME_WIDTH, screen.get_height() - 3 * label.LABEL_SIZE[
-            1] - 2 * FRAME_WIDTH
+        frame_size = 4 * button.BUTTON_SIZE[0] - 2 * FRAME_WIDTH, \
+            screen.get_height() - 3 * label.LABEL_SIZE[1] - 2 * FRAME_WIDTH
         self.frame_rect = pygame.Rect(frame_coord, frame_size)
 
         # buttons list
         self.B = []
         # labels list
         self.L = []
-
-        gui = self.application.GUIs['moveBoxesGame']
 
         w1 = screen.get_width() / 2 - 5 * button.BUTTON_SIZE[0] / 4
         w = screen.get_width() / 2 + button.BUTTON_SIZE[0] / 4
@@ -113,8 +111,8 @@ class Controls(GUI):
 
         for b in self.B:
             b.render()
-        for l in self.L:
-            l[0].render(l[1])
+        for lab in self.L:
+            lab[0].render(lab[1])
         self.label.render(_('CONTROLS'))
         pygame.display.update()
 

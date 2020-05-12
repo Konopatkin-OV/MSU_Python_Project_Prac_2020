@@ -25,7 +25,7 @@ class GUI(object):
     def run(self):
         running = True
         return_value = None
-        self.application.clock.tick() # ignore previous loading time
+        self.application.clock.tick()  # ignore previous loading time
         while running:
             # process all incoming events
             for event in pygame.event.get():
@@ -63,4 +63,3 @@ class GUI(object):
             self.render()
 
         return return_value
-
