@@ -15,7 +15,7 @@ class GameEntity(object):
         self.y = y
 
     def get_pos(self):
-        return (self.x, self.y)
+        return self.x, self.y
 
 
 class Player(GameEntity):
