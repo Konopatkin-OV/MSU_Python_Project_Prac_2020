@@ -1,3 +1,7 @@
+"""controls.py
+==============
+GUI class for changing game controls buttons.
+"""
 import pygame
 from gui import GUI
 import button

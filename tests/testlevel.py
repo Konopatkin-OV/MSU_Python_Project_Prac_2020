@@ -50,5 +50,3 @@ class TestLevel(TestCase):
 
         field[1][1] = 'b'
         self.assertRaises(IOError, lambda: Level.check_for_validity(field))
-
-

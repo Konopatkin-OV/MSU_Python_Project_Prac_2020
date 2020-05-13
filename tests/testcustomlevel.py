@@ -109,4 +109,3 @@ class TestCustomLevel(TestCase):
         self.assertEqual(field[x][y], ' ')
         self.assertEqual(self.custom_level.width, CustomLevel.min_width)
         self.assertEqual(self.custom_level.height, CustomLevel.min_height)
-

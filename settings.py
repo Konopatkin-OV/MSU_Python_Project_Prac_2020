@@ -1,3 +1,7 @@
+"""settings.py
+==============
+GUI class for game settings page.
+"""
 import pygame
 from gui import GUI
 import label

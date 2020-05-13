@@ -1,3 +1,7 @@
+"""menu.py
+===========
+GUI class for menu page.
+"""
 import pygame
 from gui import GUI
 import button

@@ -1,3 +1,7 @@
+"""BaseApp.py - main application.
+=================================
+Initialises pygame and rules over interfaces.
+"""
 import pygame
 import pygame.locals
 from moveBoxesGame import MoveBoxesGame
