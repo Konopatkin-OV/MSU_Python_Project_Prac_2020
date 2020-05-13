@@ -5,7 +5,7 @@ TEXT_COLOR = 200, 200, 200
 LABEL_SIZE = 200, 50
 
 
-class Label():
+class Label:
     def __init__(self, screen, coord, label_size=LABEL_SIZE,
                  color=pygame.Color(0, 0, 0), font_size=28):
 
