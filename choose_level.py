@@ -1,3 +1,7 @@
+"""choose_level.py
+==================
+GUI class for adding and choosing levels.
+"""
 import pygame
 from gui import GUI
 import button

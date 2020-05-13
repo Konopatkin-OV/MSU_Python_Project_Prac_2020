@@ -1,3 +1,7 @@
+"""button.py
+============================
+Class for creating a button with text.
+"""
 import pygame
 import gradients
 from typing import Tuple

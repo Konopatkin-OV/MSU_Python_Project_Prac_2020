@@ -1,3 +1,7 @@
+"""label.py
+===========
+Label class for creating text in a rectangle.
+"""
 import pygame
 from typing import Tuple
 

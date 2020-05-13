@@ -1,3 +1,6 @@
+"""moveBoxesGame.py
+===================
+"""
 from gui import GUI
 from level import Level
 import os

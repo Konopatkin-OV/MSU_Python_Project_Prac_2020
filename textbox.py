@@ -1,3 +1,7 @@
+"""textbox.py.
+==============
+Textbox class for entering strings.
+"""
 import pygame
 from typing import Tuple
 

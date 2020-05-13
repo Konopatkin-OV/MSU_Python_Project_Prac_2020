@@ -1,9 +1,12 @@
+"""gui.py
+=========
+The interface class which runs the main cycle.
+Can be inherited and used for menu or specific game modes.
+"""
 import pygame
 import pygame.locals
 
 
-# the interface class which runs the main cycle
-# can be inherited and used for menu or specific game modes
 class GUI(object):
     def __init__(self, app, name='__main__'):
         self.application = app
