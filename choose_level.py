@@ -4,13 +4,13 @@ import button
 import label
 from level import Level
 
-BUTTONS_NUM_PER_COL = 5
-COLUMNS = 3
-FRAME_WIDTH = 3
+BUTTONS_NUM_PER_COL: int = 5
+COLUMNS: int = 3
+FRAME_WIDTH: int = 3
 
 
 class ChooseLevel(GUI):
-    def __init__(self, app, name, num_added_buttons=0):
+    def __init__(self, app, name: str, num_added_buttons: int = 0):
         super().__init__(app, name)
 
         # button list for levels
@@ -44,7 +44,7 @@ class ChooseLevel(GUI):
         while i < buttons_per_page and i < number_of_buttons:
             level = self.levels[i]
             if level.name.isdigit() and len(level.name) < 4:
-                button_name = _('LEVEL ') + str(level.name)
+                button_name = _('LEVEL ') + level.name
             else:
                 button_name = level.name
             e = pygame.event.Event(pygame.USEREVENT, {'app': self.application,
@@ -106,17 +106,19 @@ class ChooseLevel(GUI):
         w2 = screen.get_width() / 2 - label.LABEL_SIZE[0] / 2
         self.label = (label.Label(screen, (w2, 0), color=pygame.Color(70, 50, 70)))
 
-    def add_level(self, name):
+    def add_level(self, name: str):
+        """Add new level to levels list."""
+
         level = Level(name)
         index = self.application.GUIs['moveBoxesGame'].add_level(level)
 
         screen = self.application.screen
 
         if self.current_w and self.current_h:
-            if name.isdigit() and len(level.name) < 4:
-                button_name = _('LEVEL ') + str(level.name)
+            if name.isdigit() and len(name) < 4:
+                button_name = _('LEVEL ') + name
             else:
-                button_name = level.name
+                button_name = name
             e = pygame.event.Event(pygame.USEREVENT, {'app': self.application,
                                                       'name': 'moveBoxesGame',
                                                       'lvl': index})
@@ -157,9 +159,9 @@ class ChooseLevel(GUI):
                 frame_size = bg_size[0] - 2 * FRAME_WIDTH, bg_size[1] - 2 * FRAME_WIDTH
                 self.frame_rect = pygame.Rect(frame_coord, frame_size)
 
-    """Button rendering."""
-
     def render(self):
+        """Button rendering."""
+
         screen = self.application.screen
         screen.fill((0, 0, 0))
         screen.fill(pygame.Color(100, 80, 100), self.bg_rect)
@@ -172,9 +174,9 @@ class ChooseLevel(GUI):
         self.label.render(_('LEVELS'))
         pygame.display.update()
 
-    """Button event handler."""
+    def process_event(self, e: pygame.event.EventType):
+        """Button event handler."""
 
-    def process_event(self, e):
         # press level button
         for b in self.B:
             b.process_event(e)

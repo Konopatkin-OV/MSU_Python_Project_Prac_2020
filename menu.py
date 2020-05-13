@@ -1,15 +1,13 @@
 import pygame
 from gui import GUI
 import button
-import choose_level
-import settings
 import label
 
-FRAME_WIDTH = 3
+FRAME_WIDTH: int = 3
 
 
 class Menu(GUI):
-    def __init__(self, app, name):
+    def __init__(self, app, name: str):
         super().__init__(app, name)
         screen = self.application.screen
 
@@ -53,12 +51,9 @@ class Menu(GUI):
         w2 = screen.get_width() / 2 - label.LABEL_SIZE[0] / 2
         self.label = (label.Label(screen, (w2, 0), color=pygame.Color(70, 50, 70)))
 
-        choose_level.ChooseLevel(app, 'ChooseLevel0')
-        settings.Settings(app, 'Settings')
-
-    """Button rendering."""
-
     def render(self):
+        """Button rendering."""
+
         screen = self.application.screen
         screen.fill((0, 0, 0))
 #        walls_w = screen.get_width() / WALL_IMAGE.get_width()
@@ -78,9 +73,9 @@ class Menu(GUI):
         self.label.render(_('MENU'))
         pygame.display.update()
 
-    """Button event handler."""
+    def process_event(self, e: pygame.event.EventType):
+        """Button event handler."""
 
-    def process_event(self, e):
         # press a button
         for b in self.B:
             b.process_event(e)
