@@ -3,11 +3,11 @@ from gui import GUI
 import button
 import label
 
-FRAME_WIDTH = 3
+FRAME_WIDTH: int = 3
 
 
 class Controls(GUI):
-    def __init__(self, app, name):
+    def __init__(self, app, name: str):
         super().__init__(app, name)
         screen = self.application.screen
 
@@ -101,9 +101,9 @@ class Controls(GUI):
 
         self.move = -1
 
-    """Button rendering."""
-
     def render(self):
+        """Button rendering."""
+
         screen = self.application.screen
         screen.fill((0, 0, 0))
         screen.fill(pygame.Color(100, 80, 100), self.bg_rect)
@@ -116,15 +116,15 @@ class Controls(GUI):
         self.label.render(_('CONTROLS'))
         pygame.display.update()
 
-    """Check key values collision."""
+    def buttons_collision(self, value: int) -> bool:
+        """Check key values collision."""
 
-    def buttons_collision(self, name, value):
         gui = self.application.GUIs['moveBoxesGame']
         return value in gui.keys.values() or value in gui.keys['move'].keys()
 
-    """Button event handler."""
+    def process_event(self, e: pygame.event.EventType):
+        """Button event handler."""
 
-    def process_event(self, e):
         gui = self.application.GUIs['moveBoxesGame']
 
         # press a button
@@ -140,7 +140,7 @@ class Controls(GUI):
             elif e.name == 'Settings':
                 return e.name
         elif e.type == pygame.KEYDOWN:
-            if self.move != -1 and not self.buttons_collision(self.move, e.key):
+            if self.move != -1 and not self.buttons_collision(e.key):
                 if isinstance(self.move, str):
                     gui.keys[self.move] = e.key
                     if self.move == 'grab':

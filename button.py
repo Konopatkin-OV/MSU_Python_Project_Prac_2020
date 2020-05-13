@@ -1,13 +1,17 @@
 import pygame
 import gradients
+from typing import Tuple
 
-TEXT_COLOR = 200, 200, 200
-BUTTON_SIZE = 130, 30
+TEXT_COLOR: Tuple[int, int, int] = (200, 200, 200)
+BUTTON_SIZE: Tuple[int, int] = (130, 30)
 
 
 class Button:
-    def __init__(self, name, screen, event, coord, button_size=BUTTON_SIZE,
-                 color=pygame.Color(70, 50, 70), font_size=25):
+    def __init__(self, name: str, screen: pygame.Surface, event: pygame.event.EventType,
+                 coord: Tuple[int, int],
+                 button_size: Tuple[int, int] = BUTTON_SIZE,
+                 color: pygame.Color = pygame.Color(70, 50, 70),
+                 font_size: int = 25):
         self.name = name
         self.event = event
 
@@ -27,9 +31,9 @@ class Button:
 
         self.is_button_pressed = 0
 
-    """Render a button."""
-
     def render(self):
+        """Render a button."""
+
         self.screen.blit(gradients.vertical(self.rect.size,
                                             self.color,
                                             self.new_color),
@@ -40,24 +44,23 @@ class Button:
         place = text.get_rect(center=self.rect.center)
         self.screen.blit(text, place)
 
-    """Post event to events queue."""
-
     def press(self):
+        """Post event to events queue."""
+
         self.color, self.new_color = self.new_color, self.color
         self.render()
         pygame.event.post(self.event)
 
-    """Button event handler."""
-    def process_event(self, e, *pressed):
+    def process_event(self, e: pygame.event.EventType):
+        """Button event handler."""
+
         # indicates if button was pressed, pressing animation
         if e.type is pygame.MOUSEBUTTONDOWN and self.rect.collidepoint(e.pos):
             self.color, self.new_color = self.new_color, self.color
             self.render()
             self.is_button_pressed = 1
-            return
 
         # indicates if button was released
         elif e.type is pygame.MOUSEBUTTONUP and self.is_button_pressed:
             self.press()
             self.is_button_pressed = 0
-            return

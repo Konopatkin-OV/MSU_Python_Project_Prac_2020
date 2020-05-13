@@ -3,6 +3,8 @@ import pygame.locals
 from moveBoxesGame import MoveBoxesGame
 from menu import Menu
 from editing.editor import LevelEditor
+from choose_level import ChooseLevel
+from settings import Settings
 
 import sys
 import os.path
@@ -58,5 +60,7 @@ if __name__ == '__main__':
     app = Application()
     gui = MoveBoxesGame(app, 'moveBoxesGame')
     levelEditor = LevelEditor(app, "NewLevel")
+    chooseLevel = ChooseLevel(app, 'ChooseLevel0')
+    settings = Settings(app, 'Settings')
     menu = Menu(app, '__main__')
     app.start()

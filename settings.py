@@ -4,11 +4,11 @@ import label
 import button
 import controls
 
-FRAME_WIDTH = 3
+FRAME_WIDTH: int = 3
 
 
 class Settings(GUI):
-    def __init__(self, app, name):
+    def __init__(self, app, name: str):
         super().__init__(app, name)
         screen = self.application.screen
 
@@ -73,9 +73,9 @@ class Settings(GUI):
             19 * button.BUTTON_SIZE[1] / 2 - 2 * FRAME_WIDTH
         self.frame_rect = pygame.Rect(frame_coord, frame_size)
 
-    """Button rendering."""
-
     def render(self):
+        """Button rendering."""
+
         screen = self.application.screen
         screen.fill((0, 0, 0))
 
@@ -94,9 +94,8 @@ class Settings(GUI):
         self.label.render(_('SETTINGS'))
         pygame.display.update()
 
-    """Button event handler."""
-
-    def process_event(self, e):
+    def process_event(self, e: pygame.event.EventType):
+        """Button event handler."""
         if self.set_mode:
             self.B[2].process_event(e)
             self.B[3].process_event(e)
