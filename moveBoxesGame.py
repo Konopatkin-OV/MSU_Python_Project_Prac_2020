@@ -1,5 +1,6 @@
 """moveBoxesGame.py
 ===================
+GUI class for gameplay interface 
 """
 from gui import GUI
 from level import Level
@@ -177,9 +178,11 @@ class MoveBoxesGame(GUI):
         self.success_str = ''
 
     def set_image(self, name, image):
+        """Change image for [name] to [image] object."""
         self.images[name] = image
 
     def process_frame(self, delta_t):
+        """GUI overridden function. Processes time-dependent actions for given time"""
         if self.is_moving:
             self.moving_time += delta_t
             if self.moving_time >= self.move_duration:
@@ -187,6 +190,8 @@ class MoveBoxesGame(GUI):
                 self.moving_time = 0.0
 
     def start_move(self, player_goal, box_goal=None):
+        """Moves player and a grabbed box [optional] to specified cell.
+Also starts movement animation."""
         if not self.is_moving:
             if self.move_duration > 0.0:
                 self.is_moving = True
@@ -203,6 +208,9 @@ class MoveBoxesGame(GUI):
     # renders one square object, maybe moving
     # because copypasting is evil!
     def render_sq_object(self, image, size, offset, cell_size, pos, old_move_pos=None):
+        """Renders square object with given image and size on cell field with given offset on the screen \
+and cell size in center of a cell with given position or during movement from another cell. \
+Used only from render function."""
         x, y = pos
         image = pygame.transform.smoothscale(image, (size, size))
         if old_move_pos is not None:
@@ -221,11 +229,13 @@ class MoveBoxesGame(GUI):
                                           int(offset[1] + (y + 0.5) * cell_size - size / 2)))
 
     def check_level_finish(self):
+        """Raises flag if current level is completed."""
         if self.current_level.is_complete():
             self.level_finished = True
             self.success_str = _("SUCCESS!")
 
     def render(self):
+        """GUI overridden function. Renders current state of the game on the application screen."""
         screen = self.application.screen
 
         screen.fill((0, 0, 0))
@@ -302,6 +312,7 @@ class MoveBoxesGame(GUI):
         pygame.display.update()
 
     def process_event(self, event):
+        """GUI overridden function. Processes one incoming event."""
         # press a button
         for k, b in self.buttons.items():
             b.process_event(event)
@@ -400,11 +411,13 @@ class MoveBoxesGame(GUI):
                         return '__main__'
 
     def add_level(self, level: Level) -> int:
+        """Adds new level object to playable levels."""
         index = len(self.levels)
         self.levels.append(level)
         return index
 
     def reset(self):
+        """Resets state of the current level."""
         self.current_level.reset()
         self.moves_made = 0
         self.level_finished = False
@@ -416,6 +429,7 @@ class MoveBoxesGame(GUI):
         self.moving_time = 0.0
 
     def select_level(self, index: int):
+        """Changes current level."""
         self.current_index = index
         self.current_level = self.levels[index]
 
