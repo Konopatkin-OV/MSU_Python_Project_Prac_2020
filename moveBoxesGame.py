@@ -9,7 +9,8 @@ import pygame.locals
 import button
 from label import Label, LABEL_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
-    BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
+    BOX_CELL_IMAGE, BOX_IMAGE, \
+    PLAYER_IMAGE_UP, PLAYER_IMAGE_DOWN, PLAYER_IMAGE_LEFT, PLAYER_IMAGE_RIGHT
 
 
 class MoveBoxesGame(GUI):
@@ -43,8 +44,11 @@ class MoveBoxesGame(GUI):
         self.images['wall'].blit(WALL_IMAGE, (0, 0))
         self.images['box_cell'] = pygame.Surface((128, 128), pygame.SRCALPHA)
         self.images['box_cell'].blit(BOX_CELL_IMAGE, (0, 0))
-        self.images['player'] = pygame.Surface((128, 128), pygame.SRCALPHA)
-        self.images['player'].blit(PLAYER_IMAGE, (0, 0))
+        self.images['player'] = []
+        for img in PLAYER_IMAGE_UP, PLAYER_IMAGE_DOWN, PLAYER_IMAGE_LEFT, PLAYER_IMAGE_RIGHT:
+            cur = pygame.Surface((128, 128), pygame.SRCALPHA)
+            cur.blit(img, (0, 0))
+            self.images['player'].append(cur)
         self.images['box'] = pygame.Surface((128, 128), pygame.SRCALPHA)
         self.images['box'].blit(BOX_IMAGE, (0, 0))
         self.images['grab'] = pygame.Surface((64, 64), flags=pygame.locals.SRCALPHA)
@@ -52,6 +56,7 @@ class MoveBoxesGame(GUI):
         pygame.draw.circle(self.images['grab'], (50, 100, 200), (32, 32), 25, 4)
 
         # game variables
+        self.player_dir = 1 # default looking down
         self.moves_made = 0
         self.level_finished = False
         self.attempting_grabbing = False
@@ -268,7 +273,7 @@ class MoveBoxesGame(GUI):
             self.render_sq_object(self.images['box'], cell_size, offset,
                                   cell_size, box.get_pos(), old_pos)
 
-        self.render_sq_object(self.images['player'], cell_size, offset, cell_size,
+        self.render_sq_object(self.images['player'][self.player_dir], cell_size, offset, cell_size,
                               self.current_level.player.get_pos(),
                               self.moving_old_poses['player'] if self.is_moving else None)
 
@@ -329,9 +334,11 @@ class MoveBoxesGame(GUI):
                 else:
                     return '__main__'
             elif event.key in self.keys["move"]:
-                # try moving, still no collision checking
-                # get direction of moving
-                cur_dir = self.move_dirs[self.keys["move"][event.key]]
+                # get direction of moving and "rotate" player image
+                cur_dir = self.keys["move"][event.key]
+                if not self.is_moving:
+                    self.player_dir = cur_dir
+                cur_dir = self.move_dirs[cur_dir]
                 dx, dy = cur_dir
 
                 x, y = self.current_level.player.get_pos()

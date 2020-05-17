@@ -8,7 +8,7 @@ from editing.customlevel import CustomLevel
 from button import Button, BUTTON_SIZE
 from textbox import TextBox, TEXTBOX_SIZE
 from image import WALL_IMAGE, FREE_CELL_IMAGE, \
-    BOX_CELL_IMAGE, PLAYER_IMAGE, BOX_IMAGE
+    BOX_CELL_IMAGE, PLAYER_IMAGE_DOWN as PLAYER_IMAGE, BOX_IMAGE
 
 
 class LevelEditor(GUI):
