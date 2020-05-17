@@ -1,5 +1,5 @@
 from unittest import TestCase
-from editing.editor import StillPicture, DraggedPicture
+from Sokoban.editing.editor import StillPicture, DraggedPicture
 from pygame import Rect
 
 

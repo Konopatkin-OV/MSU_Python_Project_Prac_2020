@@ -1,13 +1,13 @@
-from gui import GUI
+from Sokoban.gui import GUI
 import pygame
 from pygame.event import Event
 from pygame import Surface, Rect, SRCALPHA
 from pygame.locals import MOUSEBUTTONDOWN, MOUSEMOTION, MOUSEBUTTONUP
 from pygame.transform import smoothscale
-from editing.customlevel import CustomLevel
-from button import Button, BUTTON_SIZE
-from textbox import TextBox, TEXTBOX_SIZE
-from image import WALL_IMAGE, FREE_CELL_IMAGE, \
+from Sokoban.editing.customlevel import CustomLevel
+from Sokoban.button import Button, BUTTON_SIZE
+from Sokoban.textbox import TextBox, TEXTBOX_SIZE
+from Sokoban.image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, PLAYER_IMAGE_DOWN as PLAYER_IMAGE, BOX_IMAGE
 
 

@@ -1,5 +1,5 @@
 from unittest import TestCase
-from editing.customlevel import CustomLevel
+from Sokoban.editing.customlevel import CustomLevel
 
 
 class TestCustomLevel(TestCase):

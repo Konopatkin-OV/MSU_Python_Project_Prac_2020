@@ -1,5 +1,5 @@
 from unittest import TestCase
-from level import Level
+from Sokoban.level import Level
 
 
 class TestLevel(TestCase):

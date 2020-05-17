@@ -3,7 +3,7 @@
 Class for creating a button with text.
 """
 import pygame
-import gradients
+import Sokoban.gradients as gradients
 from typing import Tuple
 
 TEXT_COLOR: Tuple[int, int, int] = (200, 200, 200)

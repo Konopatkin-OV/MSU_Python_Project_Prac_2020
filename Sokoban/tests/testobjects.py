@@ -1,5 +1,5 @@
 from unittest import TestCase
-from objects import GameEntity
+from Sokoban.objects import GameEntity
 
 
 class TestGameEntity(TestCase):

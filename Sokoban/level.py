@@ -1,6 +1,7 @@
 from typing import Optional
-from objects import Player, Box
+from Sokoban.objects import Player, Box
 from typing import List
+import os
 
 
 class Level:
@@ -16,7 +17,8 @@ class Level:
         self.box_cells = []
         self.name = file_name
 
-        file = open(f'levels/{file_name}.lvl', 'r')
+        dirname = os.path.dirname(__file__)
+        file = open(os.path.join(dirname, f'levels\\{file_name}.lvl'), 'r')
         self.order = int(file.readline().split()[0])
         field = [[symbol for symbol in line if symbol != '\n']
                  for line in file if line != '\n']

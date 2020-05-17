@@ -3,10 +3,10 @@
 GUI class for adding and choosing levels.
 """
 import pygame
-from gui import GUI
-import button
-import label
-from level import Level
+from Sokoban.gui import GUI
+import Sokoban.button as button
+import Sokoban.label as label
+from Sokoban.level import Level
 
 BUTTONS_NUM_PER_COL: int = 5
 COLUMNS: int = 3

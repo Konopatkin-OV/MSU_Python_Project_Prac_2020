@@ -1,5 +1,5 @@
 import os
-from level import Level
+from Sokoban.level import Level
 
 
 class CustomLevel:
@@ -130,8 +130,10 @@ class CustomLevel:
             field.append(actual_column)
         Level.check_for_validity(field)
 
+        dirname = os.path.dirname(__file__)
+
         order = 1
-        while os.path.exists(f'levels/my level {order}.lvl'):
+        while os.path.exists(os.path.join(dirname, f'..\levels\\my level {order}.lvl')):
             order = order + 1
 
         # default name for level
@@ -139,11 +141,18 @@ class CustomLevel:
             name = f'my level {order}'
         else:
             name = level_name
-        file = open(f'levels/{name}.lvl', 'w')
+
+        print("NAME: ", name)
+        print("PATH: ", os.path.join(dirname, f'..\levels\\{name}.lvl'))
+        file = open(os.path.join(dirname, f'..\levels\\{name}.lvl'), 'w')
+        print("OPENED")
         file.write(f'{max_order + 1}\n')
+        print("WRITTEN")
         for line in zip(*field):
             for symbol in line:
                 file.write(symbol)
             file.write('\n')
+        print("WRITTEN FULL")
         file.close()
+        print("CLOSED")
         return name

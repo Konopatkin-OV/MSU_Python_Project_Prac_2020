@@ -2,14 +2,14 @@
 ===================
 GUI class for gameplay interface 
 """
-from gui import GUI
-from level import Level
+from Sokoban.gui import GUI
+from Sokoban.level import Level
 import os
 import pygame
 import pygame.locals
-import button
-from label import Label, LABEL_SIZE
-from image import WALL_IMAGE, FREE_CELL_IMAGE, \
+import Sokoban.button as button
+from Sokoban.label import Label, LABEL_SIZE
+from Sokoban.image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, BOX_IMAGE, \
     PLAYER_IMAGE_UP, PLAYER_IMAGE_DOWN, PLAYER_IMAGE_LEFT, PLAYER_IMAGE_RIGHT
 
@@ -20,7 +20,8 @@ class MoveBoxesGame(GUI):
 
         self.levels = []
 
-        root, dirs, files = next(os.walk('levels/', topdown=True))
+        dirname = os.path.dirname(__file__)
+        root, dirs, files = next(os.walk(os.path.join(dirname, 'levels'), topdown=True))
 #        for name in sorted(files, key=lambda x: os.path.getmtime(os.path.abspath(f'levels/{x}'))):
         for name in files:
             if name.endswith('.lvl'):

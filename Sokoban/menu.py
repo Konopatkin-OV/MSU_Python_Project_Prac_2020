@@ -3,9 +3,9 @@
 GUI class for menu page.
 """
 import pygame
-from gui import GUI
-import button
-import label
+from Sokoban.gui import GUI
+import Sokoban.button as button
+import Sokoban.label as label
 
 FRAME_WIDTH: int = 3
 
