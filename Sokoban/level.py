@@ -18,7 +18,7 @@ class Level:
         self.name = file_name
 
         dirname = os.path.dirname(__file__)
-        file = open(os.path.join(dirname, f'levels\\{file_name}.lvl'), 'r')
+        file = open(os.path.join(dirname, 'levels', f'{file_name}.lvl'), 'r')
         self.order = int(file.readline().split()[0])
         field = [[symbol for symbol in line if symbol != '\n']
                  for line in file if line != '\n']

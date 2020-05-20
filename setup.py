@@ -18,7 +18,7 @@ setup(
 
     package_data={
         # If any package contains *.txt or *.rst files, include them:
-        "Sokoban": ["*.po", "images\\*.png", "levels\\*.lvl"],
+        "Sokoban": ["Makefile", "*.rst", "*.po", "images\\*.png", "levels\\*.lvl"],
         # And include any *.msg files found in the "hello" package, too:
         # "hello": ["*.msg"],
     },

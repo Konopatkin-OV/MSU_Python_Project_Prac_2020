@@ -23,3 +23,5 @@ python setup.py bdist_wheel
 В нормальных коммитах в папке dist уже должен лежать готовый wheel для текущего состояния проекта, его можно установить командой:
 
 pip install [path_to_project]\dist\Sokoban-0.1-py3-none-any.whl
+
+Пример запуска приложения в файле launch.py

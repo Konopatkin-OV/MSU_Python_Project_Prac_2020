@@ -133,7 +133,7 @@ class CustomLevel:
         dirname = os.path.dirname(__file__)
 
         order = 1
-        while os.path.exists(os.path.join(dirname, f'..\levels\\my level {order}.lvl')):
+        while os.path.exists(os.path.join(dirname, '..', 'levels', f'my level {order}.lvl')):
             order = order + 1
 
         # default name for level
@@ -142,17 +142,11 @@ class CustomLevel:
         else:
             name = level_name
 
-        print("NAME: ", name)
-        print("PATH: ", os.path.join(dirname, f'..\levels\\{name}.lvl'))
-        file = open(os.path.join(dirname, f'..\levels\\{name}.lvl'), 'w')
-        print("OPENED")
+        file = open(os.path.join(dirname, '..', 'levels', f'{name}.lvl'), 'w')
         file.write(f'{max_order + 1}\n')
-        print("WRITTEN")
         for line in zip(*field):
             for symbol in line:
                 file.write(symbol)
             file.write('\n')
-        print("WRITTEN FULL")
         file.close()
-        print("CLOSED")
         return name

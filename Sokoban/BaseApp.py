@@ -4,16 +4,6 @@ Initialises pygame and rules over interfaces.
 """
 import pygame
 import pygame.locals
-from Sokoban.moveBoxesGame import MoveBoxesGame
-from Sokoban.menu import Menu
-from Sokoban.editing.editor import LevelEditor
-from Sokoban.choose_level import ChooseLevel
-from Sokoban.settings import Settings
-
-import sys
-import os.path
-import gettext
-
 
 # the main application class which initialises pygame and rules over interfaces
 class Application(object):
@@ -56,25 +46,3 @@ class Application(object):
                     # stop application if the main interface finished work
                     running = False
         pygame.quit()
-
-
-def init():
-    '''Initializes game application.'''
-    datapath = os.path.dirname(sys.argv[0])
-    gettext.install('BaseApp', datapath)
-    global app
-    app = Application()
-    gui = MoveBoxesGame(app, 'moveBoxesGame')
-    levelEditor = LevelEditor(app, "NewLevel")
-    chooseLevel = ChooseLevel(app, 'ChooseLevel0')
-    settings = Settings(app, 'Settings')
-    menu = Menu(app, '__main__')
-
-def run():
-    '''Starts initialized game application'''
-    app.start()
-
-
-if __name__ == '__main__':
-    init()
-    run()
