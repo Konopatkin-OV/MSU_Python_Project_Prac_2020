@@ -432,11 +432,3 @@ Used only from render function."""
         """Changes current level."""
         self.current_index = index
         self.current_level = self.levels[index]
-
-
-if __name__ == '__main__':
-    from BaseApp import Application
-
-    app = Application()
-    gui = MoveBoxesGame(app, '__main__')
-    app.start()
