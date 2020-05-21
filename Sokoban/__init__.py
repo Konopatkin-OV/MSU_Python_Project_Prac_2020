@@ -1,3 +1,7 @@
+"""__init__.py
+==================================
+Initializes game application and starts initialized game application.
+"""
 from Sokoban.BaseApp import Application
 from Sokoban.moveBoxesGame import MoveBoxesGame
 from Sokoban.menu import Menu
@@ -9,20 +13,22 @@ import sys
 import os.path
 import gettext
 
+
 def init():
     '''Initializes game application.'''
     datapath = os.path.dirname(sys.argv[0])
     gettext.install('BaseApp', datapath)
     global app
     app = Application()
-    gui = MoveBoxesGame(app, 'moveBoxesGame')
-    levelEditor = LevelEditor(app, "NewLevel")
-    chooseLevel = ChooseLevel(app, 'ChooseLevel0')
-    settings = Settings(app, 'Settings')
-    menu = Menu(app, '__main__')
+    MoveBoxesGame(app, 'moveBoxesGame')
+    LevelEditor(app, "NewLevel")
+    ChooseLevel(app, 'ChooseLevel0')
+    Settings(app, 'Settings')
+    Menu(app, '__main__')
+
 
 def run():
-    '''Starts initialized game application'''
+    '''Starts initialized game application.'''
     app.start()
 
 

@@ -1,6 +1,6 @@
 """moveBoxesGame.py
 ===================
-GUI class for gameplay interface 
+GUI class for gameplay interface.
 """
 from Sokoban.gui import GUI
 from Sokoban.level import Level
@@ -22,7 +22,6 @@ class MoveBoxesGame(GUI):
 
         dirname = os.path.dirname(__file__)
         root, dirs, files = next(os.walk(os.path.join(dirname, 'levels'), topdown=True))
-#        for name in sorted(files, key=lambda x: os.path.getmtime(os.path.abspath(f'levels/{x}'))):
         for name in files:
             if name.endswith('.lvl'):
                 name = name[:-4]
@@ -58,7 +57,7 @@ class MoveBoxesGame(GUI):
         pygame.draw.circle(self.images['grab'], (50, 100, 200), (32, 32), 25, 4)
 
         # game variables
-        self.player_dir = 1 # default looking down
+        self.player_dir = 1  # default looking down
         self.moves_made = 0
         self.level_finished = False
         self.attempting_grabbing = False

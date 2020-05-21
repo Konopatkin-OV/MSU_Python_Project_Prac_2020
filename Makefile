@@ -5,7 +5,7 @@
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = Sokoban
-SOURCEDIR     = .
+SOURCEDIR     = Sokoban
 BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".

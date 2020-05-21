@@ -1,3 +1,7 @@
+"""customlevel.py
+=================
+CustomLevel class for editing level.
+"""
 import os
 from Sokoban.level import Level
 
@@ -88,9 +92,8 @@ class CustomLevel:
             else:
                 break
 
-    """Puts something on the field."""
-
     def put(self, symbol: str, x: int, y: int):
+        """Puts something on the field."""
         if 0 <= x < self.width and 0 <= y < self.height and \
                 (symbol == ' ' and self.field[x][y] == '' or
                  symbol == 'x' and self.field[x][y] == ' ' or
@@ -99,9 +102,8 @@ class CustomLevel:
             self._add_extra_walls()
         self._remove_extra_walls()
 
-    """Removes something from the field."""
-
     def remove(self, x: int, y: int) -> str:
+        """Removes something from the field."""
         if 0 <= x < self.width and 0 <= y < self.height and \
                 self.field[x][y]:
             symbol = self.field[x][y][-1]
@@ -110,9 +112,8 @@ class CustomLevel:
         else:
             return ''
 
-    """Saves the level to a file."""
-
     def save(self, level_name, max_order) -> str:
+        """Saves the level to a file."""
         field = []
         for column in self.field:
             actual_column = []

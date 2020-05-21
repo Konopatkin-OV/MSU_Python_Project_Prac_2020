@@ -1,15 +1,15 @@
 """BaseApp.py - main application.
 =================================
-Initialises pygame and rules over interfaces.
+Initializes pygame and rules over interfaces.
 """
 import pygame
 import pygame.locals
 
-# the main application class which initialises pygame and rules over interfaces
+
 class Application(object):
     def __init__(self, app_name="Test application",
                  screen_size=(1280, 720), max_fps=60):
-        # initialise pygame, display screen object and clock timer
+        """Initialize pygame, display screen object and clock timer."""
         pygame.init()
         self.screen = pygame.display.set_mode(screen_size, 0, 32)
         self.clock = pygame.time.Clock()
@@ -17,12 +17,12 @@ class Application(object):
         self.GUIs = {}
         self.max_fps = max_fps
 
-    # add interface to map, mainly used from initialised interfaces
     def add_gui(self, gui, name):
+        """Add interface to map, mainly used from initialised interfaces."""
         self.GUIs[name] = gui
 
-    # run the application from the main interface
     def start(self):
+        """Run the application from the main interface."""
         if '__main__' in self.GUIs:
             cur_guis = [self.GUIs['__main__']]
         else:
