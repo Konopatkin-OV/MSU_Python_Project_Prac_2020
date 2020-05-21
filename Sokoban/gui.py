@@ -12,20 +12,20 @@ class GUI(object):
         self.application = app
         app.add_gui(self, name)
 
-    # renders the GUI in the application
     def render(self):
+        """Renders the GUI in the application."""
         pygame.display.update()
 
-    # events handler
     def process_event(self, event):
+        """Events handler."""
         return
 
-    # time handler, delta_t - time from the last call
     def process_frame(self, delta_t):
+        """Time handler, delta_t - time from the last call."""
         return
 
-    # main application cycle for current GUI
     def run(self):
+        """Main application cycle for current GUI."""
         running = True
         return_value = None
         self.application.clock.tick()  # ignore previous loading time

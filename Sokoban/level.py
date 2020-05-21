@@ -1,3 +1,7 @@
+"""level.py
+===========
+Class for game levels.
+"""
 from typing import Optional
 from Sokoban.objects import Player, Box
 from typing import List
@@ -44,10 +48,9 @@ class Level:
         self.width = len(self.field)
         self.height = len(self.field[0])
 
-    """Raises IOError if the level file is invalid."""
-
     @staticmethod
     def check_for_validity(field: List[List[str]]):
+        """Raises IOError if the level file is invalid."""
         # Check that the width is acceptable
         if len(field) < Level.min_width:
             raise IOError
@@ -86,31 +89,26 @@ class Level:
                 not all(column[-1] == 'w' for column in field):
             raise IOError
 
-    """Indicates that the level is complete."""
-
     def is_complete(self) -> bool:
-        return set(self.box_cells) == \
-               set(map(lambda box: box.get_pos(), self.boxes))
-
-    """Returns a box from the given cell or None if there is no box."""
+        """Indicates that the level is complete."""
+        return set(self.box_cells) == set(map(lambda box: box.get_pos(), self.boxes))
 
     def get_box(self, x: int, y: int) -> Optional[Box]:
+        """Returns a box from the given cell or None if there is no box."""
         for box in self.boxes:
             if box.x == x and box.y == y:
                 return box
         return None
 
-    """Indicates that the cell is available and has no boxes on it."""
-
     def is_empty(self, x: int, y: int) -> bool:
+        """Indicates that the cell is available and has no boxes on it."""
         if x < 0 or x >= self.width or \
                 y < 0 or y >= self.height:
             return False
         return self.field[x][y] and not self.get_box(x, y)
 
-    """Start over."""
-
     def reset(self):
+        """Start over."""
         self.player.reset()
         for box in self.boxes:
             box.reset()

@@ -1,6 +1,9 @@
 Module contents
 ===============
 
+.. automodule:: __init__
+ :members:
+
 .. automodule:: BaseApp
  :members:
 .. autoclass:: BaseApp.Application
@@ -23,9 +26,18 @@ Module contents
 
 .. automodule:: editing.editor
  :members:
+.. autoclass::  editing.editor.LevelEditor
+ :members:
+.. autoclass::  editing.editor.StillPicture     
+ :members:
+.. autoclass::  editing.editor.DraggedPicture
+ :members:
 
 .. automodule:: editing.customlevel
  :members:
+.. autoclass::  editing.customlevel.CustomLevel
+ :members:
+
 
 .. automodule:: settings   
  :members:
@@ -46,6 +58,17 @@ Module contents
  :members:
 
 .. automodule:: level   
+ :members:
+.. autoclass:: level.Level
+ :members:
+
+.. automodule:: objects
+ :members:
+.. autoclass:: objects.GameEntity
+ :members:
+.. autoclass:: objects.Player
+ :members:
+.. autoclass:: objects.Box
  :members:
 
 .. automodule:: label

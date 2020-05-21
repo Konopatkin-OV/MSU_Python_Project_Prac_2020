@@ -1,3 +1,7 @@
+"""editor.py
+=============
+Editing classes.
+"""
 from Sokoban.gui import GUI
 import pygame
 from pygame.event import Event
