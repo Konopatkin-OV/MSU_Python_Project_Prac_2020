@@ -6,10 +6,13 @@
 Welcome to Sokoban's documentation!
 ===================================
 
+.. image::  images/player.png
+   :align:  right
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+   documentation
    module
 
 Indices and tables
