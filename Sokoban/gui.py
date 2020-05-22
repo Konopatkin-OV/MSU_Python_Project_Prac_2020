@@ -8,7 +8,7 @@ import pygame.locals
 
 
 class GUI(object):
-    def __init__(self, app, name='__main__'):
+    def __init__(self, app, name: str = '__main__'):
         self.application = app
         app.add_gui(self, name)
 
@@ -16,11 +16,11 @@ class GUI(object):
         """Renders the GUI in the application."""
         pygame.display.update()
 
-    def process_event(self, event):
+    def process_event(self, event: pygame.event.EventType):
         """Events handler."""
         return
 
-    def process_frame(self, delta_t):
+    def process_frame(self, delta_t: float):
         """Time handler, delta_t - time from the last call."""
         return
 

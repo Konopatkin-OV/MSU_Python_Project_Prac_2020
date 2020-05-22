@@ -12,10 +12,11 @@ from Sokoban.label import Label, LABEL_SIZE
 from Sokoban.image import WALL_IMAGE, FREE_CELL_IMAGE, \
     BOX_CELL_IMAGE, BOX_IMAGE, \
     PLAYER_IMAGE_UP, PLAYER_IMAGE_DOWN, PLAYER_IMAGE_LEFT, PLAYER_IMAGE_RIGHT
+from typing import Tuple, Optional
 
 
 class MoveBoxesGame(GUI):
-    def __init__(self, app, name):
+    def __init__(self, app, name: str):
         super().__init__(app, name)
 
         self.levels = []
@@ -177,11 +178,11 @@ class MoveBoxesGame(GUI):
         self.labels.append(Label(screen, (w, h), font_size=25))
         self.success_str = ''
 
-    def set_image(self, name, image):
+    def set_image(self, name: str, image: pygame.Surface):
         """Change image for [name] to [image] object."""
         self.images[name] = image
 
-    def process_frame(self, delta_t):
+    def process_frame(self, delta_t: float):
         """GUI overridden function. Processes time-dependent actions for given time"""
         if self.is_moving:
             self.moving_time += delta_t
@@ -189,7 +190,7 @@ class MoveBoxesGame(GUI):
                 self.is_moving = False
                 self.moving_time = 0.0
 
-    def start_move(self, player_goal, box_goal=None):
+    def start_move(self, player_goal: Tuple[int, int], box_goal: Optional[Tuple[int, int]] = None):
         """Moves player and a grabbed box [optional] to specified cell.
 Also starts movement animation."""
         if not self.is_moving:
@@ -207,7 +208,8 @@ Also starts movement animation."""
 
     # renders one square object, maybe moving
     # because copypasting is evil!
-    def render_sq_object(self, image, size, offset, cell_size, pos, old_move_pos=None):
+    def render_sq_object(self, image: pygame.Surface, size: int, offset: Tuple[int, int], cell_size: Tuple[int, int], 
+                         pos: Tuple[int, int], old_move_pos: Optional[Tuple[int, int]] = None):
         """Renders square object with given image and size on cell field with given offset on the screen \
 and cell size in center of a cell with given position or during movement from another cell. \
 Used only from render function."""
@@ -311,7 +313,7 @@ Used only from render function."""
 
         pygame.display.update()
 
-    def process_event(self, event):
+    def process_event(self, event: pygame.event.EventType):
         """GUI overridden function. Processes one incoming event."""
         # press a button
         for k, b in self.buttons.items():
