@@ -16,6 +16,7 @@ class CustomLevel:
         self.field = [[''] * self.height for i in range(self.width)]
 
     def _add_left_column(self):
+        """Adds a new column to the left of the field."""
         self.field.insert(0, [''] * self.height)
         self.width = self.width + 1
 
@@ -23,6 +24,7 @@ class CustomLevel:
             self._remove_column(-2)
 
     def _add_right_column(self):
+        """Adds a new column to the right of the field."""
         self.field.append([''] * self.height)
         self.width = self.width + 1
 
@@ -30,6 +32,7 @@ class CustomLevel:
             self._remove_column(1)
 
     def _add_top_row(self):
+        """Adds a new row to the top of the field."""
         for column in self.field:
             column.insert(0, '')
         self.height = self.height + 1
@@ -38,6 +41,7 @@ class CustomLevel:
             self._remove_row(-2)
 
     def _add_bottom_row(self):
+        """Adds a new row to the bottom of the field."""
         for column in self.field:
             column.append('')
         self.height = self.height + 1
@@ -46,21 +50,26 @@ class CustomLevel:
             self._remove_row(1)
 
     def _check_column(self, index: int) -> bool:
+        """Checks that the column consists entirely of walls."""
         return all(not item for item in self.field[index])
 
     def _check_row(self, index: int) -> bool:
+        """Checks that the row consists entirely of walls."""
         return all(not column[index] for column in self.field)
 
     def _remove_column(self, index: int):
+        """Removes a column from the field."""
         self.field.pop(index)
         self.width = self.width - 1
 
     def _remove_row(self, index: int):
+        """Removes a row from the field."""
         for column in self.field:
             column.pop(index)
         self.height = self.height - 1
 
     def _add_extra_walls(self):
+        """Adds a wall boarder if necessary."""
         if not self._check_column(0):
             self._add_left_column()
         if not self._check_column(-1):
@@ -71,6 +80,7 @@ class CustomLevel:
             self._add_bottom_row()
 
     def _remove_extra_walls(self):
+        """Removes a wall boarder if necessary."""
         while self.width > self.min_width:
             if self._check_column(1):
                 self._remove_column(1)

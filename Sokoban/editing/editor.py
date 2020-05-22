@@ -67,12 +67,14 @@ class LevelEditor(GUI):
         ]
 
     def clear(self):
+        """Returns the editor to its initial state."""
         self.custom_level = CustomLevel()
         self.dragged_picture = None
         self.calculate_cell_size()
         self.level_name_box.str = _('my level')
 
     def calculate_cell_size(self):
+        """Calculates new cell size when the editing area is changed."""
         reduction_x, reduction_y = 200, \
             2 * self.level_name_box.rect.top + self.level_name_box.rect.height
         screen_width, screen_height = self.application.screen.get_size()
@@ -106,6 +108,7 @@ class LevelEditor(GUI):
                                   'x': smoothscale(self.images['box_cell'], size)}
 
     def render(self):
+        """GUI overridden function. Renders current state of the editor on the application screen."""
         screen = self.application.screen
         screen.fill((0, 0, 0))
 
@@ -142,6 +145,7 @@ class LevelEditor(GUI):
         pygame.display.update()
 
     def process_event(self, event: Event):
+        """GUI overridden function. Processes one incoming event."""
         # entering level name
         if self.level_name_box.start_writing:
             self.level_name_box.process_event(event)
@@ -224,6 +228,7 @@ class StillPicture:
         self.rect = Rect(0, 0, 0, 0)
 
     def move(self, x: int, y: int, cell_size: int):
+        """Moves the picture to the specified position and resizes it."""
         self.rect.width = cell_size
         self.rect.height = cell_size
         self.rect.topleft = x, y
@@ -239,5 +244,6 @@ class DraggedPicture:
         self.offset_y = offset_y
 
     def move(self, x, y):
+        """Moves the picture to the specified position."""
         self.x = x - self.offset_x
         self.y = y - self.offset_y
