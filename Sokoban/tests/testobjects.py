@@ -10,10 +10,12 @@ class TestGameEntity(TestCase):
         x, y = 100, 200
 
         self.game_entity.move(x, y)
+
         self.assertEqual(self.game_entity.get_pos(), (x, y))
 
     def test_reset(self):
         self.game_entity.x, self.game_entity.y = 100, 200
 
         self.game_entity.reset()
+
         self.assertEqual(self.game_entity.get_pos(), (0, 0))
