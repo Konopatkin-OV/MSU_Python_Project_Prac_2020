@@ -1,0 +1,13 @@
+generates=build Sokoban.egg-info
+
+rule sokoban
+    command = python3 setup.py bdist_wheel
+
+rule clear
+    command = rm -rf $generates
+
+build wheel: sokoban
+
+build clear: clear
+
+build wheel_clear: clear wheel
