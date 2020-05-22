@@ -4,11 +4,13 @@ Initializes pygame and rules over interfaces.
 """
 import pygame
 import pygame.locals
+from typing import Tuple
+
 
 
 class Application(object):
-    def __init__(self, app_name="Test application",
-                 screen_size=(1280, 720), max_fps=60):
+    def __init__(self, app_name: str = "Test application",
+                 screen_size: Tuple[int, int] = (1280, 720), max_fps: int = 60):
         """Initialize pygame, display screen object and clock timer."""
         pygame.init()
         self.screen = pygame.display.set_mode(screen_size, 0, 32)
@@ -17,7 +19,7 @@ class Application(object):
         self.GUIs = {}
         self.max_fps = max_fps
 
-    def add_gui(self, gui, name):
+    def add_gui(self, gui, name: str):
         """Add interface to map, mainly used from initialised interfaces."""
         self.GUIs[name] = gui
 
