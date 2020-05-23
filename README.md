@@ -24,7 +24,7 @@
 4. Хотя бы одна коробка находится не на месте.
 
 # Это выглядит как-то так:
-![Иллюстрация к проекту](https://github.com/Konopatkin-OV/MSU_Python_Project_Prac_2020/blob/feature/add-moveBoxesGame/gui.png)
+![Иллюстрация к проекту](https://github.com/Konopatkin-OV/MSU_Python_Project_Prac_2020/blob/master/gui.png)
 
 # Установка
 Для создания python wheel и документации достаточно написать
