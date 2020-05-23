@@ -1,0 +1,24 @@
+generates=build Sokoban.egg-info
+doc_gen=_build
+
+
+rule sokoban
+    command = python3 setup.py bdist_wheel
+
+rule doc
+    command = make html
+
+rule clear_wheel
+    command = rm -rf $generates
+
+rule clear
+    command = rm -rf $generates $doc_gen
+
+
+build builddoc: doc
+
+build wheel: sokoban builddoc
+
+build wheel_clear: clear_wheel wheel builddoc
+
+build clear: clear
