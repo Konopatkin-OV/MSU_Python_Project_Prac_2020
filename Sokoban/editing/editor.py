@@ -108,7 +108,8 @@ class LevelEditor(GUI):
                                   'x': smoothscale(self.images['box_cell'], size)}
 
     def render(self):
-        """GUI overridden function. Renders current state of the editor on the application screen."""
+        """GUI overridden function.
+        Renders current state of the editor on the application screen."""
         screen = self.application.screen
         screen.fill((0, 0, 0))
 

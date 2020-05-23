@@ -2,15 +2,12 @@ Documentation
 ==========================
 Installation
 -------------
-After writing from root directory
+Install **ninja** via ``pip install ninja``.
+ 
+After writing from root directory ``ninja wheel``
 
-``python setup.py bdist_wheel``
-
-you get the wheel of the project in **dist** folder.
-
-To install the wheel of the project type:
-
-``pip install <path_to_project>/dist/Sokoban-0.1-py3-none-any.whl``.
+you get the wheel of the project in **dist** folder and documentation
+in  **_build/html** folder.
 
 Launching
 ----------
@@ -19,5 +16,12 @@ To start a game from root directory type:
 
 Tests
 ------
-To run unit-tests from root directory type:
-``python3 Sokoban/tests/runtests.py``.
+To run unit-tests from root directory 
+import Sokoban.tests.
+
+Clear
+------
+To clear project folder from trash type:
+``ninja clear``
+
+or ``ninja wheel_clear`` to keep documentation.

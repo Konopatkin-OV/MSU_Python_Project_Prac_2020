@@ -7,7 +7,6 @@ import pygame.locals
 from typing import Tuple
 
 
-
 class Application(object):
     def __init__(self, app_name: str = "Test application",
                  screen_size: Tuple[int, int] = (1280, 720), max_fps: int = 60):

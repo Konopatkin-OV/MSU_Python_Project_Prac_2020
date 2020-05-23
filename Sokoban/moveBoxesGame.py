@@ -208,8 +208,10 @@ Also starts movement animation."""
 
     # renders one square object, maybe moving
     # because copypasting is evil!
-    def render_sq_object(self, image: pygame.Surface, size: int, offset: Tuple[int, int], cell_size: Tuple[int, int], 
-                         pos: Tuple[int, int], old_move_pos: Optional[Tuple[int, int]] = None):
+    def render_sq_object(self, image: pygame.Surface, size: int, offset: Tuple[int, int],
+                         cell_size: Tuple[int, int],
+                         pos: Tuple[int, int],
+                         old_move_pos: Optional[Tuple[int, int]] = None):
         """Renders square object with given image and size on cell field with given offset on the screen \
 and cell size in center of a cell with given position or during movement from another cell. \
 Used only from render function."""
