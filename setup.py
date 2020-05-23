@@ -28,11 +28,11 @@ setup(
     author_email="me@example.com",
     description="Совместная разработка приложений на Python3, семестровый проект, 2020",
     url="https://github.com/Konopatkin-OV/MSU_Python_Project_Prac_2020/",   # project home page
-    #project_urls={
-        #"Bug Tracker": "https://bugs.example.com/HelloWorld/",
-        #"Documentation": "https://docs.example.com/HelloWorld/",
-        #"Source Code": "https://code.example.com/HelloWorld/",
-    #},
+    # project_urls={
+        # "Bug Tracker": "https://bugs.example.com/HelloWorld/",
+        # "Documentation": "https://docs.example.com/HelloWorld/",
+        # "Source Code": "https://code.example.com/HelloWorld/",
+    # },
     classifiers=[
         "License :: OSI Approved :: Python Software Foundation License"
     ]
