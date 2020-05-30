@@ -46,7 +46,9 @@ ninja clear
 
 pip install [path_to_project]\dist\Sokoban-0.1-py3-none-any.whl
 
-Пример запуска приложения в файле launch.py
+Для запуска приложения, можно после установки wheel запустить модуль Sokoban командой
+
+python -m Sokoban
 
 # Есть немножко юнит-тестов
 Их можно выполнить, импортировав модуль Sokoban.tests
