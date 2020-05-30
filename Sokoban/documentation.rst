@@ -12,7 +12,7 @@ in  **_build/html** folder.
 Launching
 ----------
 To start a game from root directory type:
-``python3 launch.py``.
+``python3 -m Sokoban``.
 
 Tests
 ------
