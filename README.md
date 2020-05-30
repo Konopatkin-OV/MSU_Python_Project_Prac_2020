@@ -29,26 +29,26 @@
 # Установка
 Для создания python wheel и документации достаточно написать
 
-ninja wheel
+``ninja wheel``
 
-и в папке dist появится wheel проекта, а в \_build/html документация.
+и в папке dist появится wheel проекта, а в **\_build/html** документация.
 
-ninja wheel_clear
+``ninja wheel_clear``
 
 также убирает генераты wheel, а
 
-ninja clear
+``ninja clear``
 
 кроме них также стирает документацию.
 
 
-В нормальных коммитах в папке dist уже должен лежать готовый wheel для текущего состояния проекта, его можно установить командой:
+В нормальных коммитах в папке **dist** уже должен лежать готовый wheel для текущего состояния проекта, его можно установить командой:
 
-pip install [path_to_project]\dist\Sokoban-0.1-py3-none-any.whl
+``pip install [path_to_project]\dist\Sokoban-0.1-py3-none-any.whl``
 
 Для запуска приложения, можно после установки wheel запустить модуль Sokoban командой
 
-python -m Sokoban
+``python -m Sokoban``
 
 # Есть немножко юнит-тестов
 Их можно выполнить, импортировав модуль Sokoban.tests
